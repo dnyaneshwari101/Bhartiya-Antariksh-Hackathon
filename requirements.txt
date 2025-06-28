@@ -1,0 +1,24 @@
+# Web App UI
+streamlit
+streamlit-folium
+chat_ui
+
+# LLM (Mistral via Ollama)
+ollama
+
+# Geospatial Processing
+geopandas
+shapely
+rasterio
+folium
+
+# Retrieval-Augmented Generation (RAG)
+chromadb
+#faiss-cpu  # Or faiss-gpu if you have a GPU
+
+# File and Data Handling
+pandas
+numpy
+
+# Optional: Visualization
+matplotlib
