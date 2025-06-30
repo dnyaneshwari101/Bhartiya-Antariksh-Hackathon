@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_7d15748dd88eedadb333a8938328c512 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    
+            
+                <style>
+                    .leaflet-image-layer {
+                        /* old android/safari*/
+                        image-rendering: -webkit-optimize-contrast;
+                        image-rendering: crisp-edges; /* safari */
+                        image-rendering: pixelated; /* chrome */
+                        image-rendering: -moz-crisp-edges; /* firefox */
+                        image-rendering: -o-crisp-edges; /* opera */
+                        -ms-interpolation-mode: nearest-neighbor; /* ie */
+                    }
+                </style>
+            
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_7d15748dd88eedadb333a8938328c512" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_7d15748dd88eedadb333a8938328c512 = L.map(
+                "map_7d15748dd88eedadb333a8938328c512",
+                {
+                    center: [13.0, 80.07300000000001],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 11,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_027761917d3892b103ed136bcb62156a = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_027761917d3892b103ed136bcb62156a.addTo(map_7d15748dd88eedadb333a8938328c512);
+        
+    
+            var image_overlay_e6b06deba681f99f97433bc5f34a2225 = L.imageOverlay(
+                "data:image/png;base64,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",
+                [[12.700000000000001, 79.8], [13.3, 80.346]],
+                {
+  "opacity": 0.5,
+}
+            );
+        
+    
+            image_overlay_e6b06deba681f99f97433bc5f34a2225.addTo(map_7d15748dd88eedadb333a8938328c512);
+        
+    
+            var layer_control_2148ea1f50753c130c6f000ff72b7bf7_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_027761917d3892b103ed136bcb62156a,
+                },
+                overlays :  {
+                    "Flood Layer" : image_overlay_e6b06deba681f99f97433bc5f34a2225,
+                },
+            };
+            let layer_control_2148ea1f50753c130c6f000ff72b7bf7 = L.control.layers(
+                layer_control_2148ea1f50753c130c6f000ff72b7bf7_layers.base_layers,
+                layer_control_2148ea1f50753c130c6f000ff72b7bf7_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_7d15748dd88eedadb333a8938328c512);
+
+        
+</script>
+</html>
