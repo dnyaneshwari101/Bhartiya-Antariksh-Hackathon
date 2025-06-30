@@ -1,0 +1,38 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chennai Sample Boundary"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.8,
+              13.3
+            ],
+            [
+              80.3,
+              13.3
+            ],
+            [
+              80.3,
+              12.7
+            ],
+            [
+              79.8,
+              12.7
+            ],
+            [
+              79.8,
+              13.3
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
