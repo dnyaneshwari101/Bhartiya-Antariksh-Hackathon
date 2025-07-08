@@ -1,0 +1,20 @@
+var fontSize = 100;
+jQuery(document).ready(function(){
+			jQuery("#fontSize").css("font-size",fontSize + "%");
+});
+
+/*********Font size resize**********/
+function set_font_size(fontType){
+	if(fontType == "increase"){
+			 if(fontSize < 130){
+			  fontSize = parseInt(fontSize) + 15;
+			 }
+		  }else if(fontType == "decrease"){
+			  if(fontSize > 70){
+				fontSize = parseInt(fontSize) - 15;
+			  }
+		  }else{
+			  fontSize = 100;
+		  }
+	jQuery("#fontSize").css("font-size",fontSize + "%");
+} 

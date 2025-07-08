@@ -1,0 +1,216 @@
+/**
+ * Handles toggling the navigation menu for small screens and
+ * accessibility for submenu items.
+ */
+( function() {
+	var nav = document.getElementById( 'site-navigation' ), button, menu;
+	if ( ! nav ) {
+		return;
+	}
+
+	button = nav.getElementsByTagName( 'h3' )[0];
+	menu   = nav.getElementsByTagName( 'ul' )[0];
+	if ( ! button ) {
+		return;
+	}
+
+	// Hide button if menu is missing or empty.
+	if ( ! menu || ! menu.childNodes.length ) {
+		button.style.display = 'none';
+		return;
+	}
+
+	button.onclick = function() {
+		if ( -1 === menu.className.indexOf( 'nav-menu' ) ) {
+			menu.className = 'nav-menu';
+		}
+
+		if ( -1 !== button.className.indexOf( 'toggled-on' ) ) {
+			button.className = button.className.replace( ' toggled-on', '' );
+			menu.className = menu.className.replace( ' toggled-on', '' );
+		} else {
+			button.className += ' toggled-on';
+			menu.className += ' toggled-on';
+		}
+	};
+} )();
+
+// Better focus for hidden submenu items for accessibility.
+( function( $ ) {
+	$( '.main-navigation' ).find( 'a' ).on( 'focus.twentytwelve blur.twentytwelve', function() {
+		$( this ).parents( '.menu-item, .page_item' ).toggleClass( 'focus' );
+	} );
+} )( jQuery );
+
+
+const IDLE_THRESHOLD = 300000;
+let idleTimer;
+let countdownInterval;
+let countdownValue = 120; // Start countdown from 120 seconds
+let sessionActive = true;
+let showPopupz=false;
+let resetSession;
+
+    function resetIdleTimer() {
+        clearTimeout(idleTimer);
+        if (sessionActive) {
+        idleTimer = setTimeout(showPopup, IDLE_THRESHOLD);
+        }
+    }
+
+    function showPopup() {
+        showPopupz=true;
+        const modal = document.getElementById('myModal');
+        modal.style.display = 'block';
+        startCountdown();
+
+        document.getElementById('yesButton').addEventListener('click', function() {closePopup();regenerateSession(); });
+        document.getElementById('noButton').addEventListener('click',function() {closePopup();sessionDestroy(); });
+
+    }
+
+    function startCountdown() {
+        const countdownElement = document.getElementById('countdownz');
+        countdownInterval = setInterval(() => {
+            countdownValue -= 1;
+            countdownElement.textContent = countdownValue;
+            if (countdownValue <= 0) {
+              clearInterval(countdownInterval);
+              closePopup();
+              sessionDestroy();
+          }
+      }, 1000);
+    }
+
+    function closePopup() {
+        const modal = document.getElementById('myModal');
+        modal.style.display = 'none';
+        clearTimeout(idleTimer);
+        clearInterval(countdownInterval);
+    }
+
+    function api_fetch(url, method) {
+        return fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        throw error; // Re-throw the error to propagate it to the next `.catch`
+    });
+    }
+
+
+    function regenerateSession(){
+
+       api_fetch(`${location.origin}/wp-admin/admin-ajax.php?action=degenerate_session&session=1`,'GET').then(data => { if(data.success==true){ window.location.href=`${location.origin}/login/?action=wordpress_social_authenticate&mode=login&provider=Janparichay&redirect_to=${location.href}`
+   }
+});
+   }
+
+
+
+function sessionDestroy() {
+     sessionActive = false;
+    api_fetch(`${location.origin}/wp-admin/admin-ajax.php?action=degenerate_session`,'GET').then(data => { if(data.success==true){ window.location.href='/'}
+});
+}
+
+document.addEventListener('mousemove',function (){
+    if(user_id!=0 && sessionActive && !showPopupz){
+        resetIdleTimer();
+    }
+});
+document.addEventListener('keypress', function (){
+    if(user_id!=0 && sessionActive && !showPopupz){
+        resetIdleTimer();
+    }
+
+});
+
+api_fetch(`${location.origin}/wp-admin/admin-ajax.php?action=check_user_login`, 'GET')
+.then(data => {
+    if(data.success==true){
+        resetIdleTimer();
+    }
+})
+.catch(error => console.log('Error occurred:', error));
+
+function resetlogin(){
+    if(user_id!=0){
+    resetSession=setTimeout(function(){
+      sessionDestroy()
+      document.querySelector(".loginModal").style.display="block";
+      document.querySelector(".loginpopup").addEventListener("click",function(){
+          location.reload()
+      }) 
+    },1200000)
+  }
+
+  // 1200000 timer
+
+}
+
+resetlogin();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const config = { attributes: true, childList: true, subtree: true };
+    const targetNode2= document.getElementById('myModal');
+
+    const callback2 = (mutationList, observer) => {
+        for (const mutation of mutationList) {
+             let comp = window.getComputedStyle(mutation.target);
+             if(comp.getPropertyValue("display")=='block'){
+                  clearTimeout(resetSession);
+             }
+        }
+    };
+
+    const observer2 = new MutationObserver(callback2);
+    if (targetNode2) {
+        observer2.observe(targetNode2, config);
+    } else {
+        console.error('.Modal element not found');
+    }
+
+
+    const targetNode = document.querySelector(".loginModal");
+
+    const callback = (mutationList, observer) => {
+        for (const mutation of mutationList) {
+             let compStyles = window.getComputedStyle(mutation.target);
+             if(compStyles.getPropertyValue("display")=='block'){
+                  clearTimeout(idleTimer);
+             }
+        }
+    };
+    const observer = new MutationObserver(callback);
+    if (targetNode) {
+        observer.observe(targetNode, config);
+    } else {
+        console.error('.loginModal element not found');
+    }
+});
+
+
+
+document.querySelector(".login_acceptable").addEventListener("click",function(e){
+    e.preventDefault();
+    document.querySelector(".login_modal").style.display="flex";
+
+})
+
+document.querySelector("#acceptButton").addEventListener("click",function(e){
+    document.querySelector(".login_modal").style.display="none";
+    window.location.href=`${location.origin}/login/?action=wordpress_social_authenticate&mode=login&provider=Janparichay&redirect_to=${location.href
+}`;
+
+})

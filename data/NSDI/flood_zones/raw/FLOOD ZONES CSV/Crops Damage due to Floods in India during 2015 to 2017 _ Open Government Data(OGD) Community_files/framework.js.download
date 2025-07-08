@@ -1,0 +1,170 @@
+jQuery(document).ready(function(){
+	jQuery(window).scroll(function () {
+			if (jQuery(this).scrollTop() > 150) {
+				jQuery('#back-top').fadeIn();
+			} else {
+				jQuery('#back-top').fadeOut();
+			}
+		}); 
+	jQuery('#back-top').click(function () {
+			jQuery('body,html').animate({
+				scrollTop: 0
+			}, 800);
+			
+		});		
+			
+		// Mobile Nav				   
+	jQuery('.toggle-nav-bar').click(function(){
+		jQuery('.nav-container').slideToggle();
+		jQuery(this).toggleClass('close');
+		
+		if(jQuery(this).hasClass('close')){
+			jQuery(this).html('<i class="icon-remove"></i>');
+			}
+			
+			else{
+				jQuery(this).html('<i class="icon-align-justify"></i>');
+				}
+		
+		});
+	
+jQuery('a[href^="#skipMain"]').click(function() {
+jQuery('html,body').animate({ scrollTop: jQuery(this.hash).offset().top-120}, 500);
+return false;
+e.preventDefault();
+
+});
+
+jQuery('a[href^="#htopics"]').click(function() {
+jQuery('html,body').animate({ scrollTop: jQuery(this.hash).offset().top-100}, 500);
+return false;
+e.preventDefault();
+});
+
+jQuery('a[href^="#current"]').click(function() {
+jQuery('html,body').animate({ scrollTop: jQuery(this.hash).offset().top-100}, 500);
+return false;
+e.preventDefault();
+});
+
+jQuery('a[href^="#timeline"]').click(function() {
+jQuery('html,body').animate({ scrollTop: jQuery(this.hash).offset().top-100}, 500);
+return false;
+e.preventDefault();
+
+});
+jQuery('a[href^="#visualize"]').click(function() {
+jQuery('html,body').animate({ scrollTop: jQuery(this.hash).offset().top-100}, 500);
+return false;
+e.preventDefault();
+
+});
+jQuery('a[href^="#Infograph"]').click(function() {
+    jQuery('html,body').animate({ scrollTop: jQuery(this.hash).offset().top-100}, 500);
+        return false;
+        e.preventDefault();
+});
+
+jQuery('a[href^="#happs"]').click(function() {
+    jQuery('html,body').animate({ scrollTop: jQuery(this.hash).offset().top-100}, 500);
+        return false;
+        e.preventDefault();
+    });
+    
+});
+
+// On window load. This waits until images have loaded which is essential
+	jQuery(window).load(function(){
+		
+		// Fade in images so there isn't a color "pop" document load and then on window load
+		jQuery(".accordian ul li img").animate({opacity:1},500);
+		
+		// clone image
+		jQuery('.accordian ul li img').each(function(){
+			var el = jQuery(this);
+			el.css({"position":"absolute"}).wrap("<div class='img_wrapper' style='display: inline-block'>").clone().addClass('img_grayscale').css({"position":"absolute","z-index":"998","opacity":"0"}).insertBefore(el).queue(function(){
+				var el = jQuery(this);
+				el.parent().css({"width":this.width,"height":this.height});
+				el.dequeue();
+			});
+			this.src = grayscale(this.src);
+		});
+		
+		// Fade image 
+		jQuery('.accordian ul li img').mouseover(function(){
+			jQuery(this).parent().find('img:first').stop().animate({opacity:1}, 1000);
+		})
+		jQuery('.img_grayscale').mouseout(function(){
+			jQuery(this).stop().animate({opacity:0}, 1000);
+		});		
+	});
+	
+	// Grayscale w canvas method
+	function grayscale(src){
+        var canvas = document.createElement('canvas');
+		var ctx = canvas.getContext('2d');
+        var imgObj = new Image();
+		imgObj.src = src;
+		canvas.width = imgObj.width;
+		canvas.height = imgObj.height; 
+		ctx.drawImage(imgObj, 0, 0); 
+		var imgPixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		for(var y = 0; y < imgPixels.height; y++){
+			for(var x = 0; x < imgPixels.width; x++){
+				var i = (y * 4) * imgPixels.width + x * 4;
+				var avg = (imgPixels.data[i] + imgPixels.data[i + 1] + imgPixels.data[i + 2]) / 3;
+				imgPixels.data[i] = avg; 
+				imgPixels.data[i + 1] = avg; 
+				imgPixels.data[i + 2] = avg;
+			}
+		}
+		ctx.putImageData(imgPixels, 0, 0, 0, 0, imgPixels.width, imgPixels.height);
+		return canvas.toDataURL();
+    }
+jQuery(function() {
+	jQuery( "#from" ).datepicker({
+	defaultDate: "+1w",
+	changeMonth: true,
+	numberOfMonths: 1,
+	onClose: function( selectedDate ) {
+	jQuery( "#to" ).datepicker( "option", "minDate", selectedDate );
+	}
+	});
+	jQuery( "#to" ).datepicker({
+	defaultDate: "+1w",
+	changeMonth: true,
+	numberOfMonths: 1,
+	onClose: function( selectedDate ) {
+	jQuery( "#from" ).datepicker( "option", "maxDate", selectedDate );
+	}
+	});
+	});
+/*// Ajax Pagination	
+jQuery(function($) {
+    $('#ajaxpage').on('click', '#pagination a', function(e){
+        e.preventDefault();
+        var link = $(this).attr('href');
+        //console.log(link);
+       // console.log('test-link');
+        $('#ajaxpage').fadeOut(500, function(){
+            $(this).load(link + ' #ajaxpage', function() {
+                $(this).fadeIn(500);
+            });
+        });
+    });
+});*/
+// Ajax Pagination	
+jQuery(function($) {
+    $('#ajaxpage').on('click', '#pagination a', function(e){
+        e.preventDefault();
+        var link = $(this).attr('href');
+         jQuery('#ajaxloader').show();
+        $('#ajaxpage').fadeOut(50, function(){
+
+            $(this).load(link + ' #ajaxpage', function() {
+               jQuery(this).fadeIn(50);
+                 jQuery('#ajaxloader').hide();
+            });
+        });
+    });
+});

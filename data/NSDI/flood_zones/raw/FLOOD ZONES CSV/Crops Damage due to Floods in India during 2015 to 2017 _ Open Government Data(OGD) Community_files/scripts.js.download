@@ -1,0 +1,23 @@
+//JS Script file custome version 1.1 
+
+jQuery( document ).ready(function() {
+   //hide the tag cloud values with count *x* 
+	jQuery('.tagcloud:not(.ogpl-processed)').addClass('ogpl-processed').each(function() {
+		size_li = jQuery(".tagcloud a").size();
+		x=38;
+		 
+		if(size_li > x) {
+				jQuery('.tagcloud a').hide();
+				jQuery('.tagcloud a:lt('+x+')').show().append('<show more>');
+			}
+
+	});
+	
+	jQuery('.archive .archive-accordion-year > a')
+		.attr( "href" ,"#" )
+		.attr( "onclick" ,"return false;");
+
+
+		
+	
+});

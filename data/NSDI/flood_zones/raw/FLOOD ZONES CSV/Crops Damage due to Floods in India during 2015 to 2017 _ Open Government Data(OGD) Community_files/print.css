@@ -1,0 +1,148 @@
+/* Print Style Sheet */
+@media print {
+
+/*
+ * Strip background from likely candidates
+ */
+div[id*="wrapper"],
+[class*="title"],
+[class*="inner"],
+header,
+footer,
+#branding,
+#container,
+#content-column,
+.content-inner,
+.region,
+.region-header,
+.region-content,
+.article,
+.article-title,
+.article-content,
+.comment,
+.comment-title,
+.comment-content,
+
+table,
+table * {}
+
+/*
+ * Hide various bits of the page
+ */
+/* .sidebar,.nav,.field-type-taxonomy-term-reference,ul.links,.feed-icon,.poll .bar,.poll .foreground,.comment-form,#comment-form,
+.tabs,.action-links,.pager,.messages,.help, #serverinfo-lastdate {display: none !important;} */
+
+/*
+ * Ensure the display the main content region
+ */
+#content {
+  display: block !important;
+}
+/*
+ * Layout
+ */
+.content-inner {margin: 0 !important; padding: 0 !important; display: block; page-break-before:avoid !important;}
+
+/*
+ * HTML elements
+ * 
+ */
+
+
+h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,#site-name a,#site-slogan {text-decoration: none ;}
+hgroup a:link, hgroup a:visited {text-decoration: none;}
+pre,code,tt,samp,kbd,var {font-size: 10pt;font-family: Consolas, "Lucida Console", Menlo, Monaco, "DejaVu Sans Mono", monospace, sans-serif;}
+/*
+ * Images
+ */
+img {page-break-inside: avoid;}
+a img {border: none;}
+
+/*
+ * Tables
+ */
+
+thead{display: table-header-group;}
+tr{page-break-inside: avoid;}
+
+
+/*
+ * Poll module
+ */
+.poll .text,.poll .percent,.poll .total {text-align: left;}
+.poll form {margin-bottom: 0;}
+
+/*
+ * Articles
+ */
+.node,.comment {margin-bottom: 20px;overflow: hidden;page-break-inside: avoid;}
+.submitted,.submitted a{text-decoration: none;font-size: 9pt;font-weight: 400;margin: 0;padding: 0;}
+
+article, aside, figure, footer, header, hgroup, nav, section{ display: block !important;}
+
+/* ***** Header ***** */
+
+.container.top-container {max-width: 700px;}
+.menu-toggle,.menu-header,.search_image,.accessibility,.search{display: none !important;}
+.nav-wrapper ul li a{ color: black;}
+
+.post-wrapper ul li {
+    display: inline-block;
+}
+
+.post-wrapper ul li {
+    float: left;
+    margin: 0;
+    text-align: inherit;
+    width: auto;
+}
+.post-wrapper ul li a{ display: none;}
+.home .container.post-container ul{display: none;}
+.grid-holder ul li {
+    float: inherit;
+    width: 32%;
+}
+
+.header-wrapper {
+    width: 55%;
+    position: absolute;
+    float: left;
+    display:inherit;
+    top:15px;
+    padding:23px 0 24px 0;
+    left: 0;
+}
+.nav-container{
+    position: inherit;
+    width: 45%;
+	float: right;
+	top: 0;
+	right: 0;
+	margin-top: 15px !important;
+}
+.home .wrapper.post-wrapper {
+    margin-top: -30px !important;
+    padding-top:10px;
+    padding-bottom:10px;
+    border-top: 1px solid #eee; 
+}
+.slogan{
+	margin-top: 7px !important;
+}
+
+
+/*kcc page print css*/
+.scheme-title{margin-top:-20px!important}
+.kcc_chart{width:100%!important;}
+.kcc_chart:nth-child(2){margin-bottom:50px;}
+.kcc_chart:nth-child(4){margin-bottom:130px;}
+.kcc .filter-sheme, .filter-sheme, .breadcrumbs, .kcc-banner, .breadcrumbs + span, .breadcrumbs + h2{display:none!important}
+.kcc .breadcrumb{display:none}
+.kcc + .footer-wrapper{display:none!important}
+.nav-wrapper, .header-wrapper{background:#85be00 url(../images/color-line-bar-full.png) repeat-x bottom!important; background-color:#85be00!important; }
+
+#kcc_print{text-indent:0;}
+.kcc_statewisechart{box-shadow:none!important}
+.data-container .kcc_districtwisechart, .data-container .kcc_blockwisechart{position:static!important; margin-top:86px; display:block!important; box-shadow:none!important; border:1px solid #ccc; height:auto!important}
+.kcc #blockbackbutton{display:none}
+

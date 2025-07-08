@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<!-- saved from url=(0090)https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&vid=91925&embed=1 -->
+<html lang="en-US" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style id="stndz-custom-css"></style>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualization Engine v3.0</title>
+    <script type="text/javascript" nonce="">
+      document.domain = "visualize.data.gov.in";
+    var vizurl = "https://visualize.data.gov.in";
+  var vizapiurl = "https://visualizeapi.data.gov.in";
+  var dataapiurl = "https://api.data.gov.in";
+  var maptoken = "roS6ZuXh3u3FG3mn6G4ZmU50Oo5AzQ2eYRYR5zUMl4H2R9r_6EDbBbyT4iow6eMPYvplzW-v-2og1P1u-_RrnQ..";
+  var nonce="viz789654789";
+  var userlocation="";
+  if(userlocation!="" && location.href!=userlocation){
+    window.location.href=userlocation
+  }
+  </script>
+  <link rel="shortcut icon" href="https://visualize.data.gov.in/images/favicon/favicon.ico">
+  <link type="text/css" rel="stylesheet" href="./layout-default-latest.min.css">
+  <link type="text/css" rel="stylesheet" href="./bootstrap.min.css">
+  <link type="text/css" rel="stylesheet" href="./jquery-ui.min.css">
+  <link type="text/css" rel="stylesheet" href="./jquery.custom-scrollbar.min.css">
+
+  <link type="text/css" rel="stylesheet" href="./nv.d3.min.css">
+  <link type="text/css" rel="stylesheet" href="./c3.min.css">
+  <link type="text/css" rel="stylesheet" media="all" href="./jquery-jvectormap.min.css">
+  <!--<link rel="stylesheet" media="all" href="js/lib/multimap/jquery-jvectormulti-map.css"/>--->
+  <link type="text/css" rel="stylesheet" media="all" href="./leaflet.css">
+  <link type="text/css" rel="stylesheet" media="all" href="./nouislider.space.min.css">
+  <link rel="stylesheet" type="text/css" href="./jquery-ui-slider-pips.min.css">
+  <link type="text/css" rel="stylesheet" href="./reset.min.css">
+  <link type="text/css" rel="stylesheet" href="./jquery.bxslider.min.css">
+  <link type="text/css" rel="stylesheet" href="./style(1).min.css">
+  <link type="text/css" rel="stylesheet" href="./style(2).min.css">
+  <link type="text/css" rel="stylesheet" href="./responsive.min.css">
+  <link type="text/css" rel="stylesheet" href="./jquery.dataTables(1).min.css">
+  <link type="text/css" rel="stylesheet" href="./normalize.min.css">
+  <link type="text/css" rel="stylesheet" href="./main.min.css">
+  <link type="text/css" rel="stylesheet" href="./jquery.steps.min.css">
+  <!-- <link type="text/css" rel="stylesheet" href="https://js.arcgis.com/3.20/esri/css/esri.css"/>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script> -->
+  <link type="text/css" rel="stylesheet" href="./esri.css">
+  <script type="text/javascript" nonce="" src="./jquery.min(1).js.download"></script>
+  <script type="text/javascript" nonce="">
+    function get_token_with_callback(callback) {
+        $.ajax({
+          url: vizurl + "/?gettoken=1",
+          dataType: "json",
+          cache: false,
+          success: function (token) {
+            // if callback exist execute it
+            callback && callback(token);
+          },
+        });
+      }
+  </script>
+
+<style type="text/css">
+    /* counter watch     */
+
+      .myModal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 999; /* Sit on top */
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+        }
+
+        .modal-contentz {
+          background-color: #fefefe;
+          margin: 15% auto; /* 15% from the top and centered */
+          padding: 20px;
+          border: 1px solid #888;
+          width: 50%; /* Could be more or less, depending on screen size */
+        }
+
+
+
+        .button-container,.modal-contentz > p {
+            text-align: center;
+           
+        }
+
+        .button-container > button{
+             padding: 10px 60px;
+            border: 1px solid #ccc;
+            color: #fff;
+            background: #484cb0;
+        }
+
+        .button-container > button:hover{
+            cursor: pointer;
+            background: #fff;
+            color: #484cb0;
+        }
+
+        .countdown {
+          font-size: 24px;
+          font-weight: bold;
+          text-align: center;
+        }
+  </style>
+
+  <script>
+    const IDLE_THRESHOLD = 300000;
+    let idleTimer;
+    let countdownValue = 120; // Start countdown from 120 seconds
+
+    function resetIdleTimer() {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(showPopup, IDLE_THRESHOLD);
+    }
+
+    function showPopup() {
+        const modal = document.getElementById('myModal');
+        modal.style.display = 'block';
+        startCountdown();
+
+        document.getElementById('yesButton').addEventListener('click', function() {closePopup();regenerateSession(); });
+        document.getElementById('noButton').addEventListener('click',function() {closePopup();sessionDestroy(); });
+
+    }
+
+    function startCountdown() {
+        const countdownElement = document.getElementById('countdown');
+        const countdownInterval = setInterval(() => {
+            countdownValue -= 1;
+            countdownElement.textContent = countdownValue;
+            if (countdownValue <= 0) {
+              clearInterval(countdownInterval);
+              closePopup();
+              sessionDestroy();
+          }
+      }, 1000);
+    }
+
+ function closePopup() {
+        const modal = document.getElementById('myModal');
+        modal.style.display = 'none';
+        clearTimeout(idleTimer);
+    }
+
+ function api_fetch(url, method) {
+        return fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .catch(error => {
+        throw error;
+    });
+    }
+
+
+function regenerateSession(){
+
+ api_fetch(`${location.origin}/api_check.php?action=degenerate_session&session=1`,'GET').then(data => { if(data.success==true){ window.location.href=`${vizapiurl}/auth/login?provider=Janparichay`
+   }
+});
+}
+
+
+
+function sessionDestroy() {
+    api_fetch(`${location.origin}/api_check.php?action=degenerate_session`,'GET').then(data => { if(data.success==true){ window.location.href='/'}
+});
+}
+
+document.addEventListener('mousemove',function (){
+    var user_id=``
+    if(user_id!=''){
+        resetIdleTimer();
+    }
+});
+document.addEventListener('keypress', function (){
+    var user_id=``
+    if(user_id!=''){
+        resetIdleTimer();
+    }
+
+});
+
+addEventListener("DOMContentLoaded", (event) => {
+
+api_fetch(`${location.origin}/api_check.php?action=check_user_login`, 'GET')
+.then(data => {
+    if(data.success==true){
+        resetIdleTimer();
+    }
+})
+.catch(error => console.log('Error occurred:'));
+
+});
+
+
+
+
+
+  </script>
+
+
+
+</head>
+<body class="embed" style="padding-top: 0px;">
+    
+  <div class="clear"></div>
+
+  <div id="outer-center" class="ui-layout-center ">
+    <div id="overlay-container"></div>
+    <div class="clear"></div>
+    <div id="inner-center" class="ui-layout-center">
+
+      <div id="chart-container">
+	 <!-- <a class="zoom-img" data-fancybox="gallery" href="javascript:void(0);" id="zoom_icon" ><img src="images/Zoom-Icon-2.png" title = "Zoom the Visualization"/></a>-->
+	  <a class="goto_viz" href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1" id="goto_viz" target="blank" style="display: none;"><img src="./Back-Icon-2.png" title="Open the visualization on a new tab"></a>
+	  <a class="refresh" href="javascript:void(0);" id="refresh_viz" style="display: none;"><img src="./Refesh-Icon-2.png" onclick="window.location.reload();return false;" title="Reload the Visualization"></a>
+	  <a class="viz_download" href="javascript:void(0);" id="download_viz">
+		<img src="./download-icon.png" onclick="return printPNG()" title="Download the Visualization">
+	  </a>
+    <a class="viz_download" href="javascript:void(0);" id="download_map">
+		<img src="./download-icon.png" onclick="return ddbmPNG()" title="Download the Visualization">
+	  </a>
+        <div id="sidebar" style="display: none;">
+          <ul id="menu-side-list-container" class="left-nav"></ul>
+        </div>
+        <h4 id="opendataviz-chart-title">.</h4>
+        <div id="opendataviz-view-title-content">
+          <p id="opendataviz-view-title">Crops Damage due to Floods in India during 2015 to 2017  <span data-html2canvas-ignore="true" id="opendataviz-view-note" class="notevalue" title="View Note" onclick="showViewNote()"></span><span data-html2canvas-ignore="true" class="multimap_text" title="Click the State Map to View District Data"></span>	<div data-html2canvas-ignore="true" class="field-content label_show" style="display: none;"><div class="field-field map-info-ico" style="display: none;">	<input type="checkbox" id="chart-district_map2" class="viz_chart-district_map2" onclick="toShowValueOnMap();" title="Label show on map"><span title="This shows name of state/district on map" class="info-icon"></span></div></div></p>
+          <div class="map-info-ico" style="display: none;"></div>
+        </div>
+        <div id="backfordrillbar"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#" class="ClickForBack" title="Back" style="display: none;">Back</a>
+          <span id="barClickValue"></span>
+          <span class="multichart_text" title="Click on the Bar to view next level" style="display: none;"></span>
+          <span class="statename_text"></span>
+         </div>
+        <div id="chart" class="c3" style="height: 550px; overflow: auto; max-height: 550px;"><svg width="766.6666870117188" height="550" style="overflow: hidden;"><defs><clippath id="c3-1751872268729-clip"><rect width="636.6666870117188" height="418"></rect></clippath><clippath id="c3-1751872268729-clip-xaxis"><rect x="-51" y="-20" width="768.6666870117188" height="130"></rect></clippath><clippath id="c3-1751872268729-clip-yaxis"><rect x="-49" y="-22" width="70" height="460"></rect></clippath><clippath id="c3-1751872268729-clip-grid"><rect width="636.6666870117188" height="418"></rect></clippath><clippath id="c3-1751872268729-clip-subchart"><rect width="636.6666870117188" height="0"></rect></clippath></defs><g transform="translate(50.5,22.5)"><text class="c3-text c3-empty" text-anchor="middle" dominant-baseline="middle" x="318.3333435058594" y="209" style="opacity: 0;"></text><g clip-path="url(https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#c3-1751872268729-clip)" class="c3-regions" style="visibility: visible;"></g><g clip-path="url(https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#c3-1751872268729-clip-grid)" class="c3-grid" style="visibility: visible;"><g class="c3-xgrid-focus"><line class="c3-xgrid-focus" x1="320" x2="320" y1="0" y2="418" style="visibility: hidden;"></line></g></g><g clip-path="url(https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#c3-1751872268729-clip)" class="c3-chart"><g class="c3-event-rects" style="fill-opacity: 0;"><rect class="c3-event-rect" x="0" y="0" width="636.6666870117188" height="418" style=""></rect></g><g class="c3-chart-bars"><g class="c3-chart-bar c3-target c3-target-series0" style="pointer-events: none;"><g class=" c3-shapes c3-shapes-series0 c3-bars c3-bars-series0" style="cursor: pointer;"><path class="c3-shape c3-shape-0 c3-bar c3-bar-0" d="M 42.8,418 L42.8,232.19626204010524 L107,232.19626204010524 L107,418 z" style="stroke: rgb(255, 116, 82); fill: rgb(255, 116, 82); opacity: 1;"></path><path class="c3-shape c3-shape-1 c3-bar c3-bar-1" d="M 255.8,418 L255.8,51.34875893984014 L320,51.34875893984014 L320,418 z" style="stroke: rgb(255, 116, 82); fill: rgb(255, 116, 82); opacity: 1;"></path><path class="c3-shape c3-shape-2 c3-bar c3-bar-2" d="M 467.8,418 L467.8,136.92641418277924 L532,136.92641418277924 L532,418 z" style="stroke: rgb(255, 116, 82); fill: rgb(255, 116, 82); opacity: 1;"></path></g></g><g class="c3-chart-bar c3-target c3-target-series1" style="pointer-events: none;"><g class=" c3-shapes c3-shapes-series1 c3-bars c3-bars-series1" style="cursor: pointer;"><path class="c3-shape c3-shape-0 c3-bar c3-bar-0" d="M 107,418 L107,51.34875893984014 L171.2,51.34875893984014 L171.2,418 z" style="stroke: rgb(201, 130, 255); fill: rgb(201, 130, 255); opacity: 1;"></path><path class="c3-shape c3-shape-1 c3-bar c3-bar-1" d="M 320,418 L320,330.81738728473863 L384.2,330.81738728473863 L384.2,418 z" style="stroke: rgb(201, 130, 255); fill: rgb(201, 130, 255); opacity: 1;"></path><path class="c3-shape c3-shape-2 c3-bar c3-bar-2" d="M 532,418 L532,268.94690977362546 L596.2,268.94690977362546 L596.2,418 z" style="stroke: rgb(201, 130, 255); fill: rgb(201, 130, 255); opacity: 1;"></path></g></g></g><g class="c3-chart-lines"><g class="c3-chart-line c3-target c3-target-series0" style="opacity: 1; pointer-events: none;"><g class=" c3-shapes c3-shapes-series0 c3-lines c3-lines-series0"></g><g class=" c3-shapes c3-shapes-series0 c3-areas c3-areas-series0"></g><g class=" c3-selected-circles c3-selected-circles-series0"></g><g class=" c3-shapes c3-shapes-series0 c3-circles c3-circles-series0" style="cursor: pointer;"></g></g><g class="c3-chart-line c3-target c3-target-series1" style="opacity: 1; pointer-events: none;"><g class=" c3-shapes c3-shapes-series1 c3-lines c3-lines-series1"></g><g class=" c3-shapes c3-shapes-series1 c3-areas c3-areas-series1"></g><g class=" c3-selected-circles c3-selected-circles-series1"></g><g class=" c3-shapes c3-shapes-series1 c3-circles c3-circles-series1" style="cursor: pointer;"></g></g></g><g class="c3-chart-arcs" transform="translate(318.3333435058594,204)"><text class="c3-chart-arcs-title" style="text-anchor: middle; opacity: 0;"></text></g><g class="c3-chart-texts"><g class="c3-chart-text c3-target c3-target-series0  " style="opacity: 1; pointer-events: none;"><g class=" c3-texts c3-texts-series0"><text class=" c3-text c3-text-0" text-anchor="middle" style="stroke: none; fill: rgb(255, 116, 82); fill-opacity: 1;" x="74.9" y="229.19626204010524">3.374</text><text class=" c3-text c3-text-1" text-anchor="middle" style="stroke: none; fill: rgb(255, 116, 82); fill-opacity: 1;" x="287.9" y="48.34875893984014">6.658</text><text class=" c3-text c3-text-2" text-anchor="middle" style="stroke: none; fill: rgb(255, 116, 82); fill-opacity: 1;" x="499.9" y="133.92641418277924">5.104</text></g></g><g class="c3-chart-text c3-target c3-target-series1  " style="opacity: 1; pointer-events: none;"><g class=" c3-texts c3-texts-series1"><text class=" c3-text c3-text-0" text-anchor="middle" style="stroke: none; fill: rgb(201, 130, 255); fill-opacity: 1;" x="139.1" y="48.34875893984014">17043.948</text><text class=" c3-text c3-text-1" text-anchor="middle" style="stroke: none; fill: rgb(201, 130, 255); fill-opacity: 1;" x="352.1" y="327.81738728473863">4052.723</text><text class=" c3-text c3-text-2" text-anchor="middle" style="stroke: none; fill: rgb(201, 130, 255); fill-opacity: 1;" x="564.1" y="265.94690977362546">6928.8</text></g></g></g></g><g clip-path="url(https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#c3-1751872268729-clip-grid)" class="c3-grid c3-grid-lines"><g class="c3-xgrid-lines"></g><g class="c3-ygrid-lines"></g></g><g class="c3-axis c3-axis-x" clip-path="url(https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#c3-1751872268729-clip-xaxis)" transform="translate(0,418)" style="visibility: visible; opacity: 1;"><text class="c3-axis-x-label" transform="" style="text-anchor: middle;" x="318.3333435058594" dx="0" dy="80">Year</text><g class="tick" transform="translate(107, 0)" style="opacity: 1;"><line x1="107" x2="107" y2="6"></line><text x="0" y="9" transform="" style="text-anchor: middle; display: block;"><tspan x="0" dy=".71em" dx="0">2015</tspan></text></g><g class="tick" transform="translate(320, 0)" style="opacity: 1;"><line x1="107" x2="107" y2="6"></line><text x="0" y="9" transform="" style="text-anchor: middle; display: block;"><tspan x="0" dy=".71em" dx="0">2016</tspan></text></g><g class="tick" transform="translate(532, 0)" style="opacity: 1;"><line x1="107" x2="107" y2="0"></line><text x="0" y="9" transform="" style="text-anchor: middle; display: block;"><tspan x="0" dy=".71em" dx="0">2017</tspan></text></g><path class="domain" d="M0,6V0H636.6666870117188V6"></path></g><g class="c3-axis c3-axis-y" clip-path="url(https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#c3-1751872268729-clip-yaxis)" transform="translate(0,0)" style="visibility: visible; opacity: 1;"><text class="c3-axis-y-label" transform="rotate(-90)" style="text-anchor: middle;" x="-209" dx="0" dy="-26.125">In M. Ha.</text><g class="tick" transform="translate(0,418)" style="opacity: 1;"><line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;"><tspan x="-9" dy="3">0</tspan></text></g><g class="tick" transform="translate(0,363)" style="opacity: 1;"><line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;"><tspan x="-9" dy="3">1</tspan></text></g><g class="tick" transform="translate(0,308)" style="opacity: 1;"><line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;"><tspan x="-9" dy="3">2</tspan></text></g><g class="tick" transform="translate(0,253)" style="opacity: 1;"><line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;"><tspan x="-9" dy="3">3</tspan></text></g><g class="tick" transform="translate(0,198)" style="opacity: 1;"><line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;"><tspan x="-9" dy="3">4</tspan></text></g><g class="tick" transform="translate(0,143)" style="opacity: 1;"><line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;"><tspan x="-9" dy="3">5</tspan></text></g><g class="tick" transform="translate(0,88)" style="opacity: 1;"><line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;"><tspan x="-9" dy="3">6</tspan></text></g><g class="tick" transform="translate(0,33)" style="opacity: 1;"><line x2="-6"></line><text x="-9" y="0" style="text-anchor: end;"><tspan x="-9" dy="3">7</tspan></text></g><path class="domain" d="M-6,1H0V418H-6"></path></g><g class="c3-axis c3-axis-y2" transform="translate(636.6666870117188,0)" style="visibility: visible; opacity: 1;"><text class="c3-axis-y2-label" transform="rotate(-90)" style="text-anchor: middle;" x="-209" dx="0" dy="60.59375">In Rs. crores</text><g class="tick" transform="translate(0,418)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">0</tspan></text></g><g class="tick" transform="translate(0,375)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">2000</tspan></text></g><g class="tick" transform="translate(0,332)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">4000</tspan></text></g><g class="tick" transform="translate(0,289)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">6000</tspan></text></g><g class="tick" transform="translate(0,246)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">8000</tspan></text></g><g class="tick" transform="translate(0,203)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">10000</tspan></text></g><g class="tick" transform="translate(0,160)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">12000</tspan></text></g><g class="tick" transform="translate(0,117)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">14000</tspan></text></g><g class="tick" transform="translate(0,74)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">16000</tspan></text></g><g class="tick" transform="translate(0,31)" style="opacity: 1;"><line x2="6"></line><text x="9" y="0" style="text-anchor: start;"><tspan x="9" dy="3">18000</tspan></text></g><path class="domain" d="M6,1H0V418H6"></path></g></g><g transform="translate(40.5,550.5)" style="visibility: hidden;"><g clip-path="url(https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#c3-1751872268729-clip-subchart)" class="c3-chart"><g class="c3-chart-bars"></g><g class="c3-chart-lines"></g></g><g clip-path="url(https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#c3-1751872268729-clip)" class="c3-brush" fill="none" pointer-events="all" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><rect class="overlay" pointer-events="all" cursor="crosshair" x="0" y="0" width="636.6666870117188" height="0"></rect><rect class="selection" cursor="move" fill="#777" fill-opacity="0.3" stroke="#fff" shape-rendering="crispEdges" style="display: none;"></rect><rect class="handle handle--e" cursor="ew-resize" style="display: none;"></rect><rect class="handle handle--w" cursor="ew-resize" style="display: none;"></rect></g><g class="c3-axis-x" transform="translate(0,0)" clip-path="url(https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#c3-1751872268729-clip-xaxis)" style="opacity: 1;"><g class="tick" transform="translate(107, 0)" style="opacity: 1;"><line x1="107" x2="107" y2="6"></line><text x="0" y="9" transform="" style="text-anchor: middle; display: block;"><tspan x="0" dy=".71em" dx="0">2015</tspan></text></g><g class="tick" transform="translate(320, 0)" style="opacity: 1;"><line x1="107" x2="107" y2="6"></line><text x="0" y="9" transform="" style="text-anchor: middle; display: block;"><tspan x="0" dy=".71em" dx="0">2016</tspan></text></g><g class="tick" transform="translate(532, 0)" style="opacity: 1;"><line x1="107" x2="107" y2="0"></line><text x="0" y="9" transform="" style="text-anchor: middle; display: block;"><tspan x="0" dy=".71em" dx="0">2017</tspan></text></g><path class="domain" d="M0,6V0H636.6666870117188V6"></path></g></g><g transform="translate(0,530)"><g class="c3-legend-item c3-legend-item-series0" style="visibility: visible; cursor: pointer;"><text x="255.8300018310547" y="9" style="pointer-events: none;">Damage to Crops - Area</text><rect class="c3-legend-item-event" x="241.8300018310547" y="-5" width="144.1588592529297" height="16" style="fill-opacity: 0;"></rect><line class="c3-legend-item-tile" x1="239.8300018310547" y1="4" x2="249.8300018310547" y2="4" stroke-width="10" style="stroke: rgb(255, 116, 82); pointer-events: none;"></line></g><g class="c3-legend-item c3-legend-item-series1" style="visibility: visible; cursor: pointer;"><text x="399.9888610839844" y="9" style="pointer-events: none;">Damage to Crops - Value</text><rect class="c3-legend-item-event" x="385.9888610839844" y="-5" width="138.8478240966797" height="16" style="fill-opacity: 0;"></rect><line class="c3-legend-item-tile" x1="383.9888610839844" y1="4" x2="393.9888610839844" y2="4" stroke-width="10" style="stroke: rgb(201, 130, 255); pointer-events: none;"></line></g></g><text class="c3-title" x="383.3333435058594" y="0"></text></svg><div class="c3-tooltip-container" style="position: absolute; pointer-events: none; display: none; top: 95.6042px; left: 390.5px;"><table class="c3-tooltip"><tbody><tr><th colspan="2">2016</th></tr><tr class="c3-tooltip-name--series0"><td class="name"><span style="background-color:#FF7452"></span>Damage to Crops - Area</td><td class="value">6.658</td></tr><tr class="c3-tooltip-name--series1"><td class="name"><span style="background-color:#C982FF"></span>Damage to Crops - Value</td><td class="value">4052.723</td></tr></tbody></table></div></div>
+        <div id="refresh_time">
+          <span class="ref_time"></span>
+        </div>
+        <div id="datasource" style="display: block;">
+            <p><img src="./datasource.png" title="Data Source" alt="Data Source data.gov.in"></p><p>
+        </p></div>
+        <div id="pwb">
+		        <p><img src="./Watermark-datagov.png" title="Powered by visualize.data.gov.in" alt="Powered by visualize.data.gov.in"></p><p>
+        </p></div>
+        <div id="info" style="display: none;"></div>
+      </div>
+    </div>
+
+    <div id="inner-west" class="ui-layout-west">
+      <div id="table" style="height: 100%"><div id="data_table_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="data_table_length"><label>Show <select name="data_table_length" aria-controls="data_table" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="data_table_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="data_table"></label></div><table id="data_table" class="table table-striped table-bordered dataTable no-footer" cellspacing="0" width="100%" aria-describedby="data_table_info" style="width: 100%;"><thead><tr><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Sr. No (Col.1): activate to sort column ascending" style="width: 36.6667px;">Sr. No (Col.1)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Year (Col.2): activate to sort column ascending" style="width: 36.6667px;">Year (Col.2)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Area affected in m. ha. (Col.3): activate to sort column ascending" style="width: 47.6667px;">Area affected in m. ha. (Col.3)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Population affected in million (Col.4): activate to sort column ascending" style="width: 61.6667px;">Population affected in million (Col.4)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Damage to Crops - Area in m. ha. (Col.5): activate to sort column ascending" style="width: 46.6667px;">Damage to Crops - Area in m. ha. (Col.5)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Damage to Crops - Value in Rs. Cr. (Col.6): activate to sort column ascending" style="width: 56.6667px;">Damage to Crops - Value in Rs. Cr. (Col.6)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Damage to Houses - Nos. (Col.7): activate to sort column ascending" style="width: 46.6667px;">Damage to Houses - Nos. (Col.7)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Damage to Houses - Value in Rs. Cr. (Col.8): activate to sort column ascending" style="width: 49.6667px;">Damage to Houses - Value in Rs. Cr. (Col.8)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Cattle Lost Nos. (Col.9): activate to sort column ascending" style="width: 36.6667px;">Cattle Lost Nos. (Col.9)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Human live Lost Nos. (Col.10): activate to sort column ascending" style="width: 43.6667px;">Human live Lost Nos. (Col.10)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Damage to Public Utilities in Rs. Cr. (Col.11): activate to sort column ascending" style="width: 56.6667px;">Damage to Public Utilities in Rs. Cr. (Col.11)</th><th class="sorting" tabindex="0" aria-controls="data_table" rowspan="1" colspan="1" aria-label="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11): activate to sort column ascending" style="width: 115.667px;">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</th></tr></thead><tbody><tr class="odd"><td>1</td><td>2015</td><td>4.478</td><td>33.203</td><td>3.374</td><td>17043.948</td><td>3959191</td><td>8046.969</td><td>45597</td><td>1420</td><td>32200.182</td><td>57291.099</td></tr><tr class="even"><td>2</td><td>2016</td><td>7.065</td><td>26.555</td><td>6.658</td><td>4052.723</td><td>278240</td><td>114.676</td><td>22367</td><td>1420</td><td>1507.926</td><td>5675.325</td></tr><tr class="odd"><td>3</td><td>2017</td><td>5.742</td><td>18.644</td><td>5.104</td><td>6928.8</td><td>1152959</td><td>9185.75</td><td>6899</td><td>2014</td><td>2744.835</td><td>18859.385</td></tr></tbody></table><div class="dataTables_info" id="data_table_info" role="status" aria-live="polite">Showing 1 to 3 of 3 entries</div><div class="dataTables_paginate paging_simple_numbers" id="data_table_paginate"><a class="paginate_button previous disabled" aria-controls="data_table" data-dt-idx="0" tabindex="-1" id="data_table_previous">Previous</a><span><a class="paginate_button current" aria-controls="data_table" data-dt-idx="1" tabindex="0">1</a></span><a class="paginate_button next disabled" aria-controls="data_table" data-dt-idx="2" tabindex="-1" id="data_table_next">Next</a></div></div></div>
+    </div>
+    <div class="clear" style="float:left"></div>
+  </div>
+
+  <div id="outercenter-botton">
+    <div id="chart-step-controler" style="display: none;">
+      <ul id="chart-step-controler-list" class="opendataviz-menu">
+        <li><a class="menu-ico play-ico" title="Play" onclick="Dataviz.Helper.Chart.animate.play();"></a></li>
+        <li><a class="menu-ico pause-ico" title="Pause" onclick="Dataviz.Helper.Chart.animate.pause();"></a></li>
+        <li><a class="menu-ico stop-ico" title="Stop" onclick="Dataviz.Helper.Chart.animate.stop();"></a></li>
+      </ul>
+      </div>
+    <div id="slider" style="display: none;"></div>
+      </div>
+
+
+
+
+
+
+<div id="dialog-pi-save" class="dialog-content" title="New View">
+	<form id="dialog-pi-save-form">
+		<label>Title for New view</label><input id="dialog-pi-save-title" title="Save title" name="title" type="text" maxlength="150">
+	<input type="hidden" name="as_fid" value="63f581e37ca8a5862317b964181531060c211d97"></form>
+</div>
+
+<div id="dialog-new-wlview" class="dialog-content" title="New View">
+	<form id="dialog-new-wlview-form">
+		<label>Title for New view</label><input id="dialog-new-wlview-title" title="title" name="title" type="text" maxlength="150">
+	<input type="hidden" name="as_fid" value="63f581e37ca8a5862317b964181531060c211d97"></form>
+</div>
+
+<div id="dialog_view_public" class="dialog-content" title="Public View">
+	<span>Your visualization will be public after moderation by the admin and your data will also be pubically available. If you like to give your consent, then click agree.</span>
+</div>
+<div id="dialog_save_view_public" class="dialog-content" title="Public View">
+	<span>You have made modifications in your Published Visualization, the changes will be visible after moderation by the admin only. Till that time the Published Visualization will be Private. Do you agree to proceed?</span>
+</div>
+<div id="dialog_save_view_private" class="dialog-content" title="Private View">
+	<span>You are changing an existing view, so the view needs to be reviwed by admin before you make it public. Would you like to proceed?</span>
+</div>
+
+<div id="dialog_view_reject" class="dialog-content" title="Reject View">
+	<form id="dialog_view_reject_form">
+		<textarea id="dialog_view_reject_content" style="height:135px; width:100%" title="Reason for Rejecting" placeholder="Reason for Rejecting the view :"></textarea>
+	<input type="hidden" name="as_fid" value="139622e788ceb6a5535c424e20512f300ac61da9"></form>
+</div>
+<div id="dialog_view_approve" class="dialog-content" title="Approve View">
+	<form id="dialog_view_approve_form">
+		<textarea id="dialog_view_approve_content" style="height:135px; width:100%" title="Any Commnmets" placeholder="Any Commnmets On the View :"></textarea>
+	<input type="hidden" name="as_fid" value="139622e788ceb6a5535c424e20512f300ac61da9"></form>
+</div>
+
+
+
+<div id="dialog-view-tc" class="dialog-content" title="Terms and Conditions">
+	Publishing of personal identity or financial information of sensitive nature on the websites or public domain is a punishable act as per
+	 <a href="https://uidai.gov.in/images/Aadhaar_Act_2016_as_amended.pdf" target="_blank" rel="noopener noreferrer" title="Aadhaar act 2016 (You are being redirected to an external website. Please note that Open Data Portal is not responsible for external websites content &amp; privacy policies.)" style="color:#333; text-decoration:underline; opacity:1!important; font-weight:bold">Aadhaar act 2016 </a> and
+	 <a href="http://www.meity.gov.in/content/information-technology-act" target="_blank" rel="noopener noreferrer" title="IT Act 2000 (You are being redirected to an external website. Please note that Open Data Portal is not responsible for external websites content &amp; privacy policies.)" style="color:#333; text-decoration:underline;opacity:1!important; font-weight:bold"> IT Act 2000</a>.
+	With the acceptance of the terms, I ensure that all the data uploaded by me are in compliance with
+	<a href="http://www.meity.gov.in/content/information-technology-act" target="_blank" rel="noopener noreferrer" title="IT Act 2000 (You are being redirected to an external website. Please note that Open Data Portal is not responsible for external websites content &amp; privacy policies.)" style="color:#333; text-decoration:underline;opacity:1!important; font-weight:bold"> IT Act 2000</a> and
+	<a href="https://uidai.gov.in/images/Aadhaar_Act_2016_as_amended.pdf" target="_blank" rel="noopener noreferrer" title="Aadhaar act 2016 (You are being redirected to an external website. Please note that Open Data Portal is not responsible for external websites content &amp; privacy policies.)" style="color:#333; text-decoration:underline; opacity:1!important; font-weight:bold">Aadhaar act 2016 </a>.
+</div>
+<div id="dialog-embed-url" class="dialog-content" title="Embed the url">
+</div>
+<div id="dialog-delete-confirm" class="dialog-content" title="Delet the item">
+	These items will be permanently deleted and can not be recovered. Are you sure to delete??
+</div>
+
+
+
+
+
+
+<!--Html code for drilldown district map start here-->
+
+<!--Html code for drilldown district map ends here-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!---Html code for Wizard goes from here---->
+<div id="dialog-wizards-url" class="dialog-content" title="Help Wizard">
+	<div id="wizard" role="application" class="wizard clearfix"><div class="steps clearfix"><ul role="tablist"><li role="tab" class="first current" aria-disabled="false" aria-selected="true"><a id="wizard-t-0" href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#wizard-h-0" aria-controls="wizard-p-0"><span class="current-info audible">current step: </span><span class="number">1</span> Apply Filter <p>(Optional)</p></a></li><li role="tab" class="disabled" aria-disabled="true"><a id="wizard-t-1" href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#wizard-h-1" aria-controls="wizard-p-1"><span class="number">2</span> Visualization Type <p>(Optional)</p></a></li><li role="tab" class="disabled" aria-disabled="true"><a id="wizard-t-2" href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#wizard-h-2" aria-controls="wizard-p-2"><span class="number">3</span> Add Series <p>(Optional)</p></a></li><li role="tab" class="disabled last" aria-disabled="true"><a id="wizard-t-3" href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#wizard-h-3" aria-controls="wizard-p-3"><span class="number">4</span> Apply Settings <p>(Optional)</p></a></li></ul></div><div class="content clearfix">
+			<h2 id="wizard-h-0" tabindex="-1" class="title current">Apply Filter</h2>
+			<section id="wizard-p-0" role="tabpanel" aria-labelledby="wizard-h-0" class="body current" aria-hidden="false">
+				<div id="dialog-data-field-2" title="Filter Option">
+					<div class="viz_series-form-default" id="series-form-default-2">
+					  <div id="field-and-or-2" class="viz_field-and-or field-content" style="display: none;">
+					  	<label>AND/OR:</label>
+					  	<div class="field-field">
+					  		<select class="viz_filter-and-or" id="filter-and-or-2">
+					  		  <option value="and">and</option>
+					  		  <option value="or">or</option>
+					  		</select>
+					  	</div>
+					  </div>
+					  <div class="field-content">
+					  	<label>Field:</label>
+					  	<div class="field-field">
+					  		<select id="filter-field-2" title="field" class="viz_filter-field chart-field-populate"><option value="">Select Fields</option><option value="a">Sr. No (Col.1)</option><option value="b">Year (Col.2)</option><option value="c">Area affected in m. ha. (Col.3)</option><option value="d">Population affected in million (Col.4)</option><option value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option value="g">Damage to Houses - Nos. (Col.7)</option><option value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option value="i">Cattle Lost Nos. (Col.9)</option><option value="j">Human live Lost Nos. (Col.10)</option><option value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					  	</div>
+					  </div>
+					  <div class="field-content">
+					  	<label>Operator:</label>
+					  	<div class="field-field">
+					  		<select class="viz_filter-operator" id="filter-operator-2">
+					  		  <option value="">Select Operator</option>
+					  		  <option value="=">=</option>
+					  		  <option value="!=">!=</option>
+							  <option value="&lt;=">&lt;=</option>
+							  <option value="&gt;=">&gt;=</option>
+					  		  <option value="starts with">starts with</option>
+					  		  <option value="ends with">ends with</option>
+					  		  <option value="contains">contains</option>
+					  		  <option value="matches">matches</option>
+					  		</select>
+					  	</div>
+					  </div>
+					  <div class="field-content">
+					  	<label>Value:</label>
+					  	<div class="field-field">
+					  		<input class="viz_filter-value" title="title" type="text" value="" id="filter-value-2" maxlength="50">
+					  	</div>
+					  </div>
+					  <div class="field-content">
+					  	<label>.</label>
+					  	<div class="field-field">
+					  		<button class="viz_filter-form-add_button ui-button ui-corner-all ui-widget" id="filter-form-add_button-2" filterformvalue="#dialog-wizards-url" onclick="getFiltervalue(this);" type="button">Add Filter</button>
+					  	</div>
+					  </div>
+					</div>
+					<ul class="viz_filter-list" id="filter-list"></ul>
+					<div class="clear"></div>
+				</div>
+			</section>
+
+			<h2 id="wizard-h-1" tabindex="-1" class="title">Visualization Type</h2>
+			<section id="wizard-p-1" role="tabpanel" aria-labelledby="wizard-h-1" class="body" aria-hidden="true" style="display: none;">
+				<div id="dialog-chart-type-2" class="dialog-content" title="Chart Type">
+				<div id="chart-button-container-2" title="chartType" charttypevalue="#dialog-chart-type-2">
+				<div onclick="selectCharttype(this);" class="chart-type-button" charttype="bar" title="Bar Chart -&gt; Bar chart is the best chart type for comparing multiple values.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels.
+Check ‘Show Values’ for values on chart.
+">
+						<span class="barchart-image"></span>
+						<br>Bar Chart
+						</div>
+
+						<div onclick="selectCharttype(this);" class="chart-type-button" charttype="multibar" title="Stacked Bar – Stacked bar chart is used to represent multiple types of data within a single bar.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels.
+Check ‘Show Values’ for values on chart and Check ‘Stack Bars’ for representing multiple types of data in a single bar. "><span class="multibar-image"></span>
+						<br>Stacked Bar
+						</div>
+					<!--	<div class="chart-type-button" charttype="multibarline" title="Bar Line Chart"><span class="multibarline-image"></span> </br>Bar Line Chart</div>	-->
+						<div onclick="selectCharttype(this);" class="chart-type-button" charttype="pie" title="Pie Chart - Pie chart displays contribution of each value to a total. Use it when values can be added to 100% or when there is only one data series and values are positive.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.">
+						<span class="piechart-image"></span>
+						<br>Pie Chart
+						</div>
+
+						<div onclick="selectCharttype(this);" class="chart-type-button" charttype="line" title="Line Chart - Line Chart is used to display trends over time.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+ Add X and Y axis labels. Check ‘Show Values’ for values on chart and ‘Spline Chart’ for smooth line.">
+						<span class="linechart-image"></span>
+						<br>Line Chart
+						</div>
+
+						<div onclick="selectCharttype(this);" class="chart-type-button" charttype="area" title="Area Chart – Area chart emphasizes differences between several sets of data over a period of time.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels. Check ‘Show Values’ for values on chart. ">
+						<span class="areachart-image"></span>
+						<br> Area Chart
+						</div>
+
+						<div onclick="selectCharttype(this);" class="chart-type-button" charttype="bubble" title="Bubble Chart – Bubble chart plots data defined in terms of three distinct numeric parameters. Use it when values being charted are not in X axis and Y axis order or when they represent separate measurements. The third value determines the size of the bubble marker.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.
+Size Axis: Third data value for bubble size measurements.
+Chart Settings:
+Add X and Y axis labels.">
+						<span class="bubblechart-image"></span> <br>Bubble
+						</div>
+
+						<div onclick="selectCharttype(this);" class="chart-type-button" charttype="map" title="Map – The map plots data over geographical region of India. Geographical region can be states or districts.
+For India map with states –
+Chart Series:
+X Axis - State/UT,
+Y Axis – Value to plot on states.
+Check ‘New State’ for Telangana in ‘Map Settings’.
+For India map with districts - Check ‘District Map’ option in ‘Map Settings’.
+Chart Series:
+X Axis - District, X1 Axis - State/UT, Y Axis – Value to plot on districts.
+Map Settings provide options for color, legends, steps etc.">
+						<span class="mapchart-image"></span>
+						<br>Map
+						</div>
+						<div onclick="selectCharttype(this);" class="chart-type-button" charttype="latlongmap" title="LatLong Map – The map plots data values over geographical region of India, with reference to longitude and latitude values.
+				Chart Series:
+				Longitude: Select Field having longitude value,
+				Latitude: Select field having latitude value.
+				Y axis – Data to be displayed on map.">
+						<span class="mapchart-image"></span>
+						<br>LatLong Map
+					</div>
+
+				<!--		<div onClick="selectCharttype(this);" class="chart-type-button" charttype="statemap" title="State Map – The map plots values over geographical region of a particular State/UT with respect to districts.
+Chart Series:
+X Axis – District, X1 Axis – State/UT,
+Y Axis – Values to be displayed on map.
+Map Settings provide options for color, legends, steps etc.">
+						<span class="mapchart-image"></span>
+					</br>State Map</div>-->
+
+					<!--	<div onClick="selectCharttype(this);" class="chart-type-button" charttype="state_district_map" title="State District Map – The map plots values over geographical region of a particular State/UT with respect to districts.
+				Chart Series:
+				X Axis – District, X1 Axis – State/UT,
+				Y Axis – Values to be displayed on map.
+				Map Settings provide options for color, legends, steps etc.">
+						<span class="mapchart-image"></span>
+					</br>State with District Map</div> -->
+
+
+						<div onclick="selectCharttype(this);" class="chart-type-button" charttype="lineviewfinder" title="Line with view finder – Line with view finder chart is similar to Line chart and used to display trends over time. It provides an extra functionality of viewing data over a specific time frame.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels. Check ‘Show Values’ for values on chart.">
+						<span class="lineviewfinder-image"></span>
+						<br>Line with View Finder</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="horizontalmultibar" title="Horizontal Multi Bar Chart – Horizontal Multi Bar chart represents data in horizontal bar. Option of ‘Stack Bars’ in ‘Chart Series’ can be used to represent multiple types of data within a single bar.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels. Check ‘Show Values’ for values on chart and Check ‘Stack Bars’ for representing multiple types of data in a single bar.">
+						<span class="horizontalmultibar-image"></span>
+						<br>Horizontal Multi Bar</div>
+
+						<div onclick="selectCharttype(this);" class="chart-type-button active" charttype="multichart" title="Multi Chart – Multi chart facilitates combining of line, bar and area in a single chart, displaying data series having different measurements units on two different axis ie. Y and Y1 axis.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.
+Two chart series can be added by adding multiple data series on Y axis for single data on X axis. Choose types of the chart from ‘Chart Type’ list.
+Chart Settings:
+Add X, Y and Y1 axis labels. Y axis label and Y1 axis label represents label for different chart series. Check ‘Show Values’ for values on chart. ">
+						<span class=" multibarline-image"></span>
+						<br>Multi Chart</div>
+
+						<div onclick="selectCharttype(this);" class="chart-type-button" charttype="radar" title="Radar Chart – Radar chart displays value relative to a centre point. Use it when the categories are not directly comparable.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.
+Multiple chart series can be added by adding multiple data series on Y axis for single data on X axis.
+ Chart Settings:
+Add X and Y axis labels.">
+						<span class="radarchart-image"></span>
+						<br>Radar Chart</div>
+
+						<!--<div class="chart-type-button" charttype="circularHeat" title="circularHeat"><span class="circularheat-image"></span>
+						</br>Circular Heat</div>-->
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="donut" title="Donut Chart – Donut Chart displays the contribution of each value to a total like a pie chart.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.">
+						<span class="donut-image"></span>
+						<br>Donut Chart</div>
+
+			<div onclick="selectCharttype(this);" class="chart-type-button" charttype="step" title="Step Chart – A Step chart is a Line chart which uses vertical and horizontal lines to connect the data points in a series forming a step-like progression.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.
+Multiple series can be added by adding multiple data series on Y axis with respect to single data on X axis.
+Chart Settings:
+Add X and Y axis labels. Check ‘Show Values’ for values on chart.
+">
+			<span class="stepchart-image"></span>
+			<br>Step Chart</div>
+			<div onclick="selectCharttype(this);" class="chart-type-button" charttype="drillbar" title="Drill Down Chart – Drill down charts are used to give another level of detailed reporting to charts.
+	Chart Series:
+	X Axis – Data to plot on X axis.
+	Y Axis – Data to plot on Y axis.
+	&#39;Chart Type&#39; and &#39;Drill Type&#39; are used for two levels of charts. Charts used here on levels are Bar, Pie and Horizontal Bar charts.
+	Chart Settings:
+	Add X and Y axis labels. Check ‘Show Values’ for values on chart.
+			">
+			<span class="drillchart-image"></span>
+		<br>DrillDown Chart</div>
+
+					</div>
+				</div>
+				<input id="chartType" name="Chart Type" title="chartType" type="text" class="required">
+			</section>
+
+			<h2 id="wizard-h-2" tabindex="-1" class="title">Add Series</h2>
+			<section id="wizard-p-2" role="tabpanel" aria-labelledby="wizard-h-2" class="body" aria-hidden="true" style="display: none;"><div id="dialog-chart-series-2" class="dialog-content" title="Chart Series">
+				<div id="chart-series">
+					<!---Eidt for chart series in wizard starts here-->
+							<div id="chart-series-form-default-edit" class="section-editseries viz-chart-series-form-default">
+								<div class="toggle-chart-series">
+										<button type="button" class="btn-toggle-chart-series1 ui-button ui-corner-all ui-widget" onclick="showAddSeries()">Back to Add Series</button>
+								</div>
+								<div class="field-content">
+									<label>Series Name:</label>
+									<div class="field-field">
+										<input id="chart-series-form-key-edit" title="title" class="viz_chart-series-form-key-edit" type="text" maxlength="50">
+										<span title="Provide series name here" class="info-ico">i</span>
+									</div>
+								</div>
+								<div id="bgkp" class="field-content viz_bgkp" style="display: block;">
+									<label>X Axis:</label>
+									<div class="field-field">
+										<select id="chart-series-form-x-for-edit" title="field" class="viz_chart-series-form-x-for-edit chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+										<span title="Select field to plot on X axis or Select State name field while creating India map or
+							Select District name field while creating India/State map with districts" class="info-ico">i</span>
+									</div>
+								</div>
+								<div id="ddbm-edit" class="viz_ddbm field-content" style="display: none;">
+									<label>X1 Axis:</label>
+									<div class="field-field">
+										<select id="chart-series-form-x1-for-edit" title=" Select State name" class="viz_chart-series-form-x1-edit chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+										<span title=" Select State name field here while creating India/State map with districts." class="info-ico">i</span>
+									</div>
+								</div>
+
+								<div id="long" class="viz_long field-content" style="display: none;">
+									<label>Longitude:</label>
+									<div class="field-field">
+										<select id="chart-series-form-longitude-edit" title="Select field" class="viz_chart-series-form-longitude-edit chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+										<span title="Select field having Longitude." class="info-ico">i</span>
+									</div>
+								</div>
+								<div id="lat" class="viz_lat field-content" style="display: none;">
+									<label>Latitude:</label>
+									<div class="field-field">
+										<select id="chart-series-form-latitude-edit" title="Select field" class="viz_chart-series-form-latitude-edit chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+										<span title="Select field having Latitude." class="info-ico">i</span>
+									</div>
+								</div>
+
+								<div class="field-content">
+									<label>Y Axis:</label>
+									<div class="field-field">
+										<select id="chart-series-form-y-edit" title="Select field" class="viz_chart-series-form-y-edit chart-selected-field-populate" multiple=""><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+										<span title="Select field to plot on Y axis" class="info-ico">i</span>
+									</div>
+								</div>
+								<!-- <div class="field-content viz_size_axis" id="size_axis">
+									<label>Size Axis:</label>
+									<div class="field-field">
+										<select id="chart-series-form-size" class="viz_chart-series-form-size chart-selected-field-populate"></select>
+										<span title="Select field for the measurement of bubble size." class="info-ico">i</span>
+									</div>
+								</div>
+								<div class="field-content viz_size_axis_2" id="size_axis2">
+									<label>Size Axis 2:</label>
+									<div class="field-field">
+										<select id="chart-series-form-size-2" class="viz_chart-series-form-size-2 chart-selected-field-populate"></select>
+										<span title="Select field for the Map Value." class="info-ico">i</span>
+									</div>
+								</div> -->
+								<div class="field-content viz_color_type" id="color_type-2" style="display: block;">
+									<label>Color:</label>
+									<div class="field-field">
+										<input id="chart-series-form-color-edit" title="Select color for chart" class="viz_chart-series-form-color-edit color" value="" autocomplete="off" style="background-image: none; background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+										<span title="Select color for chart" class="info-ico">i</span>
+									</div>
+								</div>
+								<div id="series-chart-type" title="Chart Type" class="viz_series-chart-type field-content" style="display: block;">
+									<label>Chart Type:</label>
+									<div class="field-field">
+										<select id="chart-series-form-y-chart-type" class="viz_chart-series-form-y-chart-type-edit">
+											<option value="bar">Bar</option>
+											<option value="line">Line</option>
+											<option value="spline">Spline</option>
+											<option value="area">Area</option>
+											<option value="area-spline">Spline Area</option>
+										</select>
+										<span title="Choose charts from given list." class="info-ico">i</span>
+									</div>
+								</div>
+								<div id="series-chart-side" title="Chart Side" class="viz_series-chart-side field-content" style="">
+									<label>Chart Side:</label>
+									<div class="field-field">
+										<select id="chart-series-form-y-chart-side" class="viz_chart-series-form-y-chart-side-edit">
+											<option value="1">Left</option>
+											<option value="2">Right</option>
+										</select><span title="Choose side for displaying Y and Y1 axis." class="info-ico">i</span>
+									</div>
+								</div>
+								<div id="series-chart-base-type" title="Chart Type" class="viz_series-chart-base-type field-content" style="display: none;">
+									<label>Chart Type:</label>
+									<div class="field-field">
+										<select id="chart-series-form-basetype" class="viz_chart-series-form-basetype-edit">
+											<option value="bar">Bar</option>
+											<option value="pie">Pie</option>
+											<option value="horizontalmultibar">HorizontalBar</option>
+										</select><span title="Choose chart type for Drill-Down." class="info-ico">i</span>
+									</div>
+								</div>
+								<div id="series-chart-drill-type" title="Drill Type" class="viz_series-chart-drill-type field-content" style="display: none;">
+									<label>Drill Type:</label>
+									<div class="field-field">
+										<select id="chart-series-form-drilltype" class="viz_chart-series-form-drilltype-edit">
+											<option value="bar">Bar</option>
+											<option value="pie">Pie</option>
+											<option value="horizontalmultibar">HorizontalBar</option>
+										</select><span title="Choose chart type for Drill-Down." class="info-ico">i</span>
+									</div>
+								</div>
+								<div class="field-content">
+									<label>.</label>
+									<div class="field-field">
+										<button onclick="saveEditedSeries(this);" chartserieseditid="#dialog-chart-series-2" id="chart-series-form-add_button-2" type="button" class="ui-button ui-corner-all ui-widget">Save Series</button>
+										<!--<button id="chart-series-form-close_button" type="button" onclick="jQuery( '#dialog-chart-series' ).dialog( 'close' );">Close</button>-->
+									</div>
+								</div>
+							</div>
+
+					<!--Edit for chart series in wizard ends here-->
+
+					<div id="chart-series-form-default" title="Series Name" class="section-addseries viz-chart-series-form-default">
+						<div class="field-content">
+							<label>Series Name:</label>
+							<div class="field-field">
+								<input id="chart-series-form-key" title="Provide series name here" class="viz_chart-series-form-key" type="text" maxlength="50">
+								<span title="Provide series name here" class="info-ico">i</span>
+							</div>
+						</div>
+						<div id="bgkp" title="Series Name" class="field-content viz_bgkp" style="display: block;">
+							<label>X Axis:</label>
+							<div class="field-field">
+								<select id="chart-series-form-x" title="select field" class="viz_chart-series-form-x chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+								<span title="Select field to plot on X axis or Select State name field while creating India map or
+			Select District name field while creating India/State map with districts" class="info-ico">i</span>
+							</div>
+						</div>
+						<div id="ddbm" title="Series Name" class="viz_ddbm field-content" style="display: none;">
+							<label>X1 Axis:</label>
+							<div class="field-field">
+								<select id="chart-series-form-x1" title="select field" class="viz_chart-series-form-x1 chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+								<span title=" Select State name field here while creating India/State map with districts." class="info-ico">i</span>
+							</div>
+						</div>
+
+						<div id="long" title="Longitude" class="viz_long field-content" style="display: none;">
+							<label>Longitude:</label>
+							<div class="field-field">
+								<select id="chart-series-form-longitude" title="select field" class="viz_chart-series-form-longitude chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+								<span title="Select field having Longitude." class="info-ico">i</span>
+							</div>
+						</div>
+						<div id="lat" title="Latitude" class="viz_lat field-content" style="display: none;">
+							<label>Latitude:</label>
+							<div class="field-field">
+								<select id="chart-series-form-latitude" title="Select field having Latitude." class="viz_chart-series-form-latitude chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+								<span title="Select field having Latitude." class="info-ico">i</span>
+							</div>
+						</div>
+
+						<div class="field-content" title="Y Axis">
+							<label>Y Axis:</label>
+							<div class="field-field">
+								<select id="chart-series-form-y" title="Select field to plot on Y axis" class="viz_chart-series-form-y chart-selected-field-populate" multiple=""><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+								<span title="Select field to plot on Y axis" class="info-ico">i</span>
+							</div>
+						</div>
+						<!-- <div class="field-content viz_size_axis" id="size_axis-2">
+							<label>Size Axis:</label>
+							<div class="field-field">
+								<select id="chart-series-form-size" class="viz_chart-series-form-size chart-selected-field-populate"></select>
+								<span title="Select field for the measurement of bubble size." class="info-ico">i</span>
+							</div>
+						</div>
+						<div class="field-content viz_size_axis_2" id="size_axis2">
+							<label>Size Axis 2:</label>
+							<div class="field-field">
+								<select id="chart-series-form-size-2" class="viz_chart-series-form-size-2 chart-selected-field-populate"></select>
+								<span title="Select field for the Map Value." class="info-ico">i</span>
+							</div>
+						</div>-->
+						<div class="field-content viz_color_type" title="Color" id="color_type-2" style="display: block;">
+							<label>Color:</label>
+							<div class="field-field">
+								<input title="Select color for chart" id="chart-series-form-color" class="viz_chart-series-form-color color" value="" autocomplete="off" style="background-image: none; background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+								<span title="Select color for chart" class="info-ico">i</span>
+							</div>
+						</div>
+						<div id="series-chart-type" title="Chart Type" class="viz_series-chart-type field-content" style="display: block;">
+							<label>Chart Type:</label>
+							<div class="field-field">
+								<select id="chart-series-form-y-chart-type" class="viz_chart-series-form-y-chart-type">
+									<option value="bar">Bar</option>
+									<option value="line">Line</option>
+									<option value="spline">Spline</option>
+									<option value="area">Area</option>
+									<option value="area-spline">Spline Area</option>
+								</select>
+								<span title="Choose charts from given list." class="info-ico">i</span>
+							</div>
+						</div>
+						<div id="series-chart-side" title="Chart Side" class="viz_series-chart-side field-content" style="">
+							<label>Chart Side:</label>
+							<div class="field-field">
+								<select id="chart-series-form-y-chart-side" class="viz_chart-series-form-y-chart-side">
+									<option value="1">Left</option>
+									<option value="2">Right</option>
+								</select><span title="Choose side for displaying Y and Y1 axis." class="info-ico">i</span>
+							</div>
+						</div>
+						<div id="series-chart-base-type" title="Chart Type" class="viz_series-chart-base-type field-content" style="display: none;">
+							<label>Chart Type:</label>
+							<div class="field-field">
+								<select id="chart-series-form-basetype" class="viz_chart-series-form-basetype" style="display: none;">
+									<option value="bar">Bar</option>
+									<option value="pie">Pie</option>
+									<option value="horizontalmultibar">HorizontalBar</option>
+								</select><span title="Choose chart type for Drill-Down." class="info-ico">i</span>
+							</div>
+						</div>
+						<div id="series-chart-drill-type" title="Drill Type" class="viz_series-chart-drill-type field-content" style="display: none;">
+							<label>Drill Type:</label>
+							<div class="field-field">
+								<select id="chart-series-form-drilltype" class="viz_chart-series-form-drilltype">
+									<option value="bar">Bar</option>
+									<option value="pie">Pie</option>
+									<option value="horizontalmultibar">HorizontalBar</option>
+								</select><span title="Choose chart type for Drill-Down." class="info-ico">i</span>
+							</div>
+						</div>
+						<div class="field-content">
+							<label>.</label>
+							<div class="field-field">
+								<button onclick="addChartseries(this);" chartseriesid="#dialog-chart-series-2" id="chart-series-form-add_button-2" type="button" class="ui-button ui-corner-all ui-widget">Add Series</button>
+							</div>
+						</div>
+					</div>
+					<ul class="viz_chart-series-list ui-sortable" id="chart-series-list-2"><li class="ui-state-default"><div class="left" style="width: 15px"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div><div class="left" style="width: 90%"><div class="pad-2"><span class="badge badge-important">Series: "Damage to Crops - Area"</span></div><div class="pad-2 forseries-x"><span class="badge badge-inverse">X: "Year (Col.2)"</span> </div><div class="pad-2 forseries-y"><span class="badge badge-inverse">Y: "Damage to Crops - Area in m. ha. (Col.5)"</span> </div><div class="pad-2"><span class="badge badge-inverse hide-col">Color: "#FF7452"</span> </div></div><div class="right" style="width: 10px" title="Remove Series"><button id="chart-series-0" onclick="deleteSeries(0)" class="close">×</button></div><div class="edit-chart-series" title="Edit Series" onclick="editSeries(0)"><button>Edit</button></div><div class="clear"></div></li><li class="ui-state-default"><div class="left" style="width: 15px"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div><div class="left" style="width: 90%"><div class="pad-2"><span class="badge badge-important">Series: "Damage to Crops - Value"</span></div><div class="pad-2 forseries-x"><span class="badge badge-inverse">X: "Year (Col.2)"</span> </div><div class="pad-2 forseries-y"><span class="badge badge-inverse">Y: "Damage to Crops - Value in Rs. Cr. (Col.6)"</span> </div><div class="pad-2"><span class="badge badge-inverse hide-col">Color: "#C982FF"</span> </div></div><div class="right" style="width: 10px" title="Remove Series"><button id="chart-series-1" onclick="deleteSeries(1)" class="close">×</button></div><div class="edit-chart-series" title="Edit Series" onclick="editSeries(1)"><button>Edit</button></div><div class="clear"></div></li></ul>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</section>
+
+		<h2 id="wizard-h-3" tabindex="-1" class="title">Apply Settings</h2>
+			<section id="wizard-p-3" role="tabpanel" aria-labelledby="wizard-h-3" class="body" aria-hidden="true" style="display: none;">
+				<div id="dialog-chart-setting-2" class="dialog-content" title="Chart Settings">
+					<div id="chartsetting-2">
+						<div id="chart-type-setting-2">
+							<div class="field-content">
+								<label>X Axis Label:</label>
+								<div class="field-field">
+									<input type="text" id="chart-x_axis_label-2" title="Type X axis label here" class="viz_chart-x_axis_label" maxlength="128" onkeyup="updateXAxisLabel(this);">
+									<span title="Type X axis label here" class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content">
+								<label>Y Axis Label:</label>
+								<div class="field-field">
+									<input type="text" id="chart-y_axis_label-2" title="Type Y axis label here" class="viz_chart-y_axis_label" maxlength="128" onkeyup="updateYAxisLabel(this);">
+									<span title="Type Y axis label here" class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content">
+								<label>Y1 Axis Label:</label>
+								<div class="field-field">
+									<input type="text" title="Type Y1 axis" id="chart-y1_axis_label-2" class="viz_chart-y1_axis_label" maxlength="128" onkeyup="updateY1AxisLabel(this);">
+									<span title="Type Y1 axis label here for other chart when chart type is ‘Multi Chart’" class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content y-max-values">
+								<label>Y Axis Max Val:</label>
+								<div class="field-field">
+									<input type="text" title="Set Y axis max value here" id="y_axis_max_val-2" class="viz_y_axis_max_val" onkeyup="updateYAxisMaxVal(this);">
+									<span title="Set Y axis max value here" class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content y-max-values">
+								<label>Y1 Axis Max Val:</label>
+								<div class="field-field">
+									<input type="text" id="y1_axis_max_val-2" title="Set Y1 axis max value here" class="viz_y1_axis_max_val" onkeyup="updateY1AxisMaxVal(this);">
+									<span title="Set Y1 axis max value here" class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content axis-tick">
+								<label>Rotate X-axis Tick:</label>
+								<div class="field-field ">
+									<input type="text" id="x-axis-tick" title="Rotate" class="viz_x-axis-tick" onkeyup="xAxisTick(this);">
+								</div>
+							</div>
+							<div class="field-content">
+								<label>Advanced:</label>
+								<div class="field-field ">
+									<textarea id="chart-advanced-2" title="Use range" class="viz_chart-advanced" onkeyup="showAdvancevalue(this);" maxlength="500"> </textarea>
+									<span title="Use range in case of radar chart. For example, range={&quot;max&quot;:100};" class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content">
+								<label>X Tick Cull:</label>
+								<div class="field-field">
+									<select id="x-tick-cull" class="viz_x-tick-cull" charttickcullvalue="#dialog-chart-setting" onchange="cullXtick(this)">
+									<option value="auto">Auto</option>
+									<option value="all">Show All</option>
+									</select>
+									<span title="Put The number of ticks you want show on X-axis" class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content top-list">
+								<label>Top List:</label>
+								<div class="field-field ">
+									<input type="text" id="chart-top-list" class="viz_top-list" title="Top List" onkeyup="topListFromSeries(this);">
+								</div>
+							</div>
+							<div class="field-content hide_sort" style="display: none;">
+								<label class="sorting-lable">Sort Bars:</label>
+								<div class="field-field sorting-type">
+									<input type="radio" id="chart_sort_bars_r1_2" title="Sort Bars" class="viz_chart_sort_bars desc" name="sort_2" value="Decending" onclick="sortBar(this);"> Decending
+									<input type="radio" id="chart_sort_bars_r2_2" title="Sort Bars" class="viz_chart_sort_bars asc" name="sort_2" value="Accending" onclick="sortBar(this);"> Accending
+									<input type="radio" id="chart_sort_bars_r3_2" title="Sort Bars" class="viz_chart_sort_bars none" name="sort_2" value="None" onclick="sortBar(this);"> None
+								</div>
+							</div>
+							<div class="field-content">
+								<label>Show Values:</label>
+								<div class="field-field">
+									<input type="checkbox" id="chart-show_value-2" title="Shows data value" onclick="chartShowvalue(this)" chartshowvalue="#dialog-chart-setting-2" class="viz_chart-show_value" value="1/">
+									<span title="Shows data value on charts, plotted on Y axis." class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content">
+								<label>Hide X Tick:</label>
+								<div class="field-field">
+									<input type="checkbox" id="chart-x-tick-2" class="viz_chart-x-tick" title="Hide X Tick Values" charttickvalue="#dialog-chart-setting" onclick="hideXTick(this);" value="1">
+										<span title="Hide X Tick Values" class="info-ico">i</span>
+								</div>
+							</div>
+							<!--<div class="field-content">
+								<label>Sort Bars:</label>
+								<div class="field-field">
+									<input type="checkbox" id="chart-sort_bars" value=1/>
+								</div>
+							</div>-->
+							<div class="field-content hide_stack_bar" style="display: none;">
+								<label>Stack Bars:</label>
+								<div class="field-field">
+									<input type="checkbox" id="chart-stack_bars-2" title="Stacks multiple series to a single bar." class="viz_chart-stack_bars" onclick="chartStackBar(this)" value="1/">
+									<span title="Stacks multiple series to a single bar." class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content spline_hide" style="display: none;">
+								<label>Spline Chart:</label>
+								<div class="field-field">
+									<input type="checkbox" id="chart-spline_line-2" onclick="chartSpline(this);" title="Converts Line" class="viz_chart-spline_line" value="1/">
+									<span title="Converts Line to the Special line in Line Chart." class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content">
+									<label>.</label>
+									<div class="field-field">
+									<button id="dialog-chart-advanced-settings_button-2" class="viz_dialog-chart-advanced-settings_button ui-button ui-corner-all ui-widget" type="button">Apply Settings</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<!--Html code for drilldown district map start here-->
+				<div id="dialog-district-map-setting-2" class="dialog-content" title="District Settings">
+					<div id="mapsetting-2">
+						<div id="map-setting-2">
+							<div class="field-content">
+								<label>Steps(Districts)</label>
+								<div class="field-field">
+									<select id="map-setting-form-steps-district-2" onclick="distmapSettingsfromsteps(this);" class="viz_district_map-setting-form-steps chart-selected-field"><option>3</option><option>4</option><option>5</option></select>
+									<span title="Represents number of data intervals." class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content district-field-content">
+								<label>Scale(Districts)</label>
+								<div id="field-district-map-setting-form-color-wrapper-2" class="viz_field-district-map-setting-form-color-wrapper field-field"><input class="division" title="division" value="undefined" type="text"><input class="color scalecolor" title="scalecolor" value=" #EEDFFF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(238, 223, 255); color: rgb(0, 0, 0);"><br><input class="division" title="division" value="undefined" type="text"><input class="color scalecolor" title="scalecolor" value=" #CD9FFF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(205, 159, 255); color: rgb(0, 0, 0);"><br><input class="color scalecolor" title="scalecolor" value=" #7B00FF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(123, 0, 255); color: rgb(255, 255, 255);"><br></div>
+									<span class="field-field"><span title="Represents color for data intervals." class="info-ico">i</span></span>
+							</div>
+							<div class="field-content" style="z-index: 9999991!important">
+								<label>Map Fill Color:</label>
+								<div class="field-field">
+									<input id="district-map-setting-form-fill-color-2" title="Color of the map" class="viz_district_map-setting-form-fill-color color" value="A1A1A1" autocomplete="off" style="background-image: none; background-color: rgb(80, 80, 80); color: rgb(255, 255, 255);">
+										<span title="Color of the map when no data value is associated." class="info-ico">i</span>
+								</div>
+							</div>
+							<!-- <div class="field-content">
+								<label>Link District:</label>
+								<div class="field-field">
+									<input id="district_link" class="viz_district_link" value="" type="text" maxlength="150"/>
+										<span title="District Link Url" class="info-ico">i</span>
+								</div>
+							</div> ///--->
+
+							<div class="field-content">
+							 <label>.</label>
+							 <div class="field-field">
+								 <button id="field-form-apply-chart-settings_button-3" class="viz_apply_map_settings ui-button ui-corner-all ui-widget" mapsettingvalue="#dialog-district-map-setting" onclick="applyDistMapsettings(this);" type="button">Apply Settings</button>
+								 <button id="field-form-close_button-2" type="button" onclick="jQuery( &#39;#dialog-district-map-setting&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+							 </div>
+						 </div>
+						</div>
+					</div>
+				</div>
+
+				<div id="dialog-map-setting-2" class="dialog-content" title="Map Settings" style="display: none;">
+					<div id="mapsetting-2">
+						<div id="map-setting-2">
+							<div class="field-content">
+								<label>Steps:</label>
+								<div class="field-field">
+									<select id="map-setting-form-steps-2" onclick="mapSettingsfromsteps(this);" class="viz_map-setting-form-steps chart-selected-field"><option>3</option><option>4</option><option>5</option></select>
+									<span title="Represents number of data intervals." class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content">
+								<label>Scale:</label>
+								<div id="field-map-setting-form-color-wrapper-2" class="viz_field-map-setting-form-color-wrapper field-field"><input class="division" title="division" value="undefined" type="text"><input class="color scalecolor" title="scalecolor" value=" #EEDFFF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(238, 223, 255); color: rgb(0, 0, 0);"><br><input class="division" title="division" value="undefined" type="text"><input class="color scalecolor" title="scalecolor" value=" #CD9FFF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(205, 159, 255); color: rgb(0, 0, 0);"><br><input class="color scalecolor" title="scalecolor" value=" #7B00FF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(123, 0, 255); color: rgb(255, 255, 255);"><br></div>
+									<span class="field-field"><span title="Represents color for data intervals." class="info-ico">i</span></span>
+							</div>
+							<div class="field-content">
+								<label>Legend Title:</label>
+								<div class="field-field">
+									<input id="map-setting-form-legend-title-2" title="Type legend title." class="viz_map-setting-form-legend-title" value="" type="text" maxlength="35">
+										<span title="Type legend title." class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content" style="z-index: 9999991!important">
+								<label>Map Fill Color:</label>
+								<div class="field-field">
+									<input id="map-setting-form-fill-color-2" title="Color" class="viz_map-setting-form-fill-color color" value="A1A1A1" autocomplete="off" style="background-image: none; background-color: rgb(80, 80, 80); color: rgb(255, 255, 255);">
+										<span title="Color of the map when no data value is associated." class="info-ico">i</span>
+								</div>
+							</div>
+							<!--<div class="field-content" style = "z-index: 9999991!important">
+								<label>Map Stroke Color:</label>
+								<div class="field-field">
+									<input id="map-setting-form-stroke-color-2" class="viz_map-setting-form-stroke-color color" value="505050" />
+										<span title="Choose boundary color here." class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content">
+								<label>Stroke Width:</label>
+								<div class="field-field">
+								<select id="map-setting-form-stroke-width-2" class="viz_map-setting-form-stroke-width chart-selected-field"><option>0</option><option>1</option><option>2</option></select>
+									<span title="Select boundary stroke width." class="info-ico">i</span>
+								</div>
+							</div>-->
+							<div class="field-content">
+								<label>Show Label on Map:</label>
+								<div class="field-field">
+									<select id="map-show_label-2" class="viz_map-show_label chart-selected-field"><option value="0">No</option><option value="1">Yes</option></select>
+									<span title="This shows name of state/district on map" class="info-ico">i</span>
+								</div>
+							</div>
+							<div class="field-content">
+								<label>Select State:</label>
+								<div class="field-field">
+									<select id="state_name_from_list-2" class="viz_state_name_from_list">
+										<option value="">Select State</option>
+									  <option value="35">ANDAMAN NICOBAR</option>
+										<option value="37">ANDHRAPRADESH</option>
+										<option value="12">ARUNACHAL PRADESH</option>
+										<option value="18">ASSAM</option>
+										<option value="10">BIHAR</option>
+										<option value="04">CHANDIGARH</option>
+										<option value="22">CHHATTISGARH</option>
+										<option value="26">DADRA NAGAR</option>
+										<option value="25">DAMAN DIU</option>
+										<option value="07">DELHI</option>
+										<option value="30">GOA</option>
+										<option value="24">GUJARAT</option>
+										<option value="06">HARYANA</option>
+										<option value="02">HIMACHAL PRADESH</option>
+										<option value="01">JAMMU &amp; KASHMIR</option>
+										<option value="20">JHARKHAND</option>
+										<option value="29">KARNATAKA</option>
+										<option value="32">KERALA</option>
+										<option value="31">LAKSHADWEEP</option>
+										<option value="23">MADHYA PRADESH</option>
+										<option value="27">MAHARASHTRA</option>
+										<option value="14">MANIPUR</option>
+										<option value="17">MEGHALAYA</option>
+										<option value="15">MIZORAM</option>
+										<option value="13">NAGALAND</option>
+										<option value="21">ODISHA</option>
+										<option value="34">PUDUCHERRY</option>
+										<option value="03">PUNJAB</option>
+										<option value="08">RAJASTHAN</option>
+										<option value="11">SIKKIM</option>
+										<option value="33">TAMILNADU</option>
+										<option value="36">TELANGANA</option>
+										<option value="16">TRIPURA</option>
+										<option value="09">UTTAR PRADESH</option>
+										<option value="05">UTTARAKHAND</option>
+										<option value="19">WEST BENGAL</option>
+									</select>
+										<span title="Select state name on which data to be plotted in state map." class="info-ico">i</span>
+								</div>
+							</div>
+
+							<!--<div class="field-content">
+								<label>District Map:</label>
+								<div class="field-field">
+									<input type="checkbox" id="chart-district_map-2" onClick="createNewState(this);" class="viz_chart-district_map"  value=1/>
+										<span title="Check option for creating district map." class="info-ico">i</span>
+								</div>
+							</div>-->
+
+
+						 <div class="field-content">
+					  	<label>.</label>
+					  	<div class="field-field">
+					  		<button id="field-form-apply-chart-settings_button-2" class="viz_apply_map_settings ui-button ui-corner-all ui-widget" mapsettingvalue="#dialog-map-setting-2" onclick="applyMapsettings(this);" type="button">Apply Settings</button>
+					  	</div>
+					  </div>
+						</div>
+					</div>
+				</div>
+			</section>
+	</div><div class="actions clearfix"><ul role="menu" aria-label="Pagination"><li class="disabled" aria-disabled="true"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#previous" role="menuitem">Previous</a></li><li aria-hidden="false" aria-disabled="false"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#next" role="menuitem">Next</a></li><li aria-hidden="true" style="display: none;"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#finish" role="menuitem">Finish</a></li></ul></div></div>
+	<button id="mydata-login-close_button-2" type="button" onclick="$(&#39;#dialog-wizards-url&#39;).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Exit</button>
+</div>
+
+  
+   <script defer="" type="text/javascript" nonce="" src="./jspdf.min.js.download"></script>
+   <script defer="" type="text/javascript" nonce="" src="./combined.1.js.download"></script>
+
+
+ 
+<script defer="" type="text/javascript" nonce="" src="./home_script.min.js.download"></script>
+<script defer="" nonce="">
+  $( function() {
+    $( "#tabs" ).tabs();
+  } );
+  </script>
+
+<!-- Home Page Design Ends Here -->
+
+
+
+<div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-dialog-buttons ui-draggable ui-resizable" aria-describedby="dialog-new-view" aria-labelledby="ui-id-1" style="display: none; position: absolute;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-1" class="ui-dialog-title">New View</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-new-view" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<form id="dialog-new-view-form">
+		<label>Title</label><input id="dialog-new-view-title" name="title" title="Edit Title" type="text" maxlength="150">
+	<input type="hidden" name="as_fid" value="63f581e37ca8a5862317b964181531060c211d97"></form>
+</div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-corner-all ui-widget">Create View</button><button type="button" class="ui-button ui-corner-all ui-widget">Cancel</button></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-dialog-buttons ui-draggable ui-resizable" aria-describedby="dialog-edit-view" aria-labelledby="ui-id-2" style="display: none; position: absolute;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-2" class="ui-dialog-title">Edit Title and Note</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-edit-view" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<form id="dialog-edit-view-form">
+		<label>Title</label><input id="dialog-edit-view-title" name="title" title="Edit Title and Note" type="text" maxlength="150">
+		<label>Note</label><textarea id="dialog-edit-view-note" title="Edit Title and Note" name="note"></textarea>
+	<input type="hidden" name="as_fid" value="235920505703b179ac5153082c830a218611da09"></form>
+</div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-corner-all ui-widget">Save View</button><button type="button" class="ui-button ui-corner-all ui-widget">Cancel</button></div></div><div class="ui-resizable-handle ui-resizable-n" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-w" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-sw" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-ne" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-nw" style="z-index: 90;"></div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-data-field" aria-labelledby="ui-id-3" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-3" class="ui-dialog-title">Field</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-data-field" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div id="fields-form-default">
+	  <div class="field-content">
+	  	<label>Field:</label>
+	  	<div class="field-field">
+	  		<select id="field-field" title="Field" class="chart-field-populate" multiple=""><option value="">Select Fields</option><option value="a">Sr. No (Col.1)</option><option value="b">Year (Col.2)</option><option value="c">Area affected in m. ha. (Col.3)</option><option value="d">Population affected in million (Col.4)</option><option value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option value="g">Damage to Houses - Nos. (Col.7)</option><option value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option value="i">Cattle Lost Nos. (Col.9)</option><option value="j">Human live Lost Nos. (Col.10)</option><option value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+	  	</div>
+	  </div>
+	  <div class="field-content">
+	  	<label>Group Function:</label>
+	  	<div class="field-field">
+	  		<select id="group-function-function-field">
+				<option value="">Select Function</option>
+				<option value="avg">avg</option>
+				<option value="count">count</option>
+				<option value="max">max</option>
+				<option value="min">min</option>
+				<option value="sum">sum</option>
+			</select>
+	  	</div>
+	  </div>
+	  <div class="field-content">
+	  	<label>.</label>
+	  	<div class="field-field">
+	  		<button id="field-form-add_button" type="button" class="ui-button ui-corner-all ui-widget">Add Field</button>
+	  		<button id="field-form-close_button" type="button" onclick="jQuery( &#39;#dialog-data-field&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+	  	</div>
+	  </div>
+	</div>
+	<ul id="field-list"></ul>
+	<div class="clear"></div>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-data-filter" aria-labelledby="ui-id-4" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-4" class="ui-dialog-title">Filter Option</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-data-filter" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div class="viz_series-form-default" id="series-form-default">
+	  <div id="field-and-or" class="viz_field-and-or field-content" style="display: none;">
+	  	<label>AND/OR:</label>
+	  	<div class="field-field">
+	  		<select class="viz_filter-and-or" id="filter-and-or">
+	  		  <option value="and">and</option>
+	  		  <option value="or">or</option>
+	  		</select>
+	  	</div>
+	  </div>
+	  <div class="field-content">
+	  	<label>Field:</label>
+	  	<div class="field-field">
+	  		<select id="filter-field" title="field" class="viz_filter-field chart-field-populate"><option value="">Select Fields</option><option value="a">Sr. No (Col.1)</option><option value="b">Year (Col.2)</option><option value="c">Area affected in m. ha. (Col.3)</option><option value="d">Population affected in million (Col.4)</option><option value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option value="g">Damage to Houses - Nos. (Col.7)</option><option value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option value="i">Cattle Lost Nos. (Col.9)</option><option value="j">Human live Lost Nos. (Col.10)</option><option value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+	  	</div>
+	  </div>
+	  <div class="field-content">
+	  	<label>Operator:</label>
+	  	<div class="field-field">
+	  		<select class="viz_filter-operator" id="filter-operator">
+	  		  <option value="">Select Operator</option>
+	  		  <option value="=">=</option>
+	  		  <option value="!=">!=</option>
+			  	<option value="&lt;=">&lt;=</option>
+			  	<option value="&gt;=">&gt;=</option>
+	  		  <option value="starts with">starts with</option>
+	  		  <option value="ends with">ends with</option>
+	  		  <option value="contains">contains</option>
+	  		  <option value="matches">matches</option>
+	  		</select>
+	  	</div>
+	  </div>
+	  <div class="field-content">
+	  	<label>Value:</label>
+	  	<div class="field-field">
+	  		<input class="viz_filter-value" title="title" type="text" value="" id="filter-value" maxlength="50">
+	  	</div>
+	  </div>
+	  <div class="field-content">
+	  	<label>.</label>
+	  	<div class="field-field">
+	  		<button class="viz_filter-form-add_button ui-button ui-corner-all ui-widget" id="filter-form-add_button" onclick="getFiltervalue(this);" filterformvalue="#dialog-data-filter" type="button">Add Filter</button>
+	  		<button id="filter-form-close_button" type="button" onclick="jQuery( &#39;#dialog-data-filter&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+	  	</div>
+	  </div>
+	</div>
+	<ul class="viz_filter-list" id="filter-list"></ul>
+	<div class="clear"></div>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-data-group" aria-labelledby="ui-id-5" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-5" class="ui-dialog-title">Group Option</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-data-group" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div id="group-form-default">
+	  <div class="field-content">
+	  	<label>Field:</label>
+	  	<div class="field-field">
+	  		<select id="group-field" title="Field" class="chart-field-populate" multiple=""><option value="">Select Fields</option><option value="a">Sr. No (Col.1)</option><option value="b">Year (Col.2)</option><option value="c">Area affected in m. ha. (Col.3)</option><option value="d">Population affected in million (Col.4)</option><option value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option value="g">Damage to Houses - Nos. (Col.7)</option><option value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option value="i">Cattle Lost Nos. (Col.9)</option><option value="j">Human live Lost Nos. (Col.10)</option><option value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+	  	</div>
+	  </div>
+	  <div class="field-content">
+	  	<label>.</label>
+	  	<div class="field-field">
+	  		<button id="group-form-add_button" type="button" class="ui-button ui-corner-all ui-widget">Add Group</button>
+	  		<button id="group-form-close_button" type="button" onclick="jQuery( &#39;#dialog-data-group&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+	  	</div>
+	  </div>
+	</div>
+	<ul id="group-list"></ul>
+	<div class="clear"></div>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-chart-type" aria-labelledby="ui-id-6" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-6" class="ui-dialog-title">Chart Type</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-chart-type" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div id="chart-button-container" charttypevalue="#dialog-chart-type">
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="bar" title="Bar Chart -&gt; Bar chart is the best chart type for comparing multiple values.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels.
+Check ‘Show Values’ for values on chart.
+">
+		<span class="barchart-image"></span>
+		<br>Bar Chart
+		</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="multibar" title="Stacked Bar – Stacked bar chart is used to represent multiple types of data within a single bar.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels.
+Check ‘Show Values’ for values on chart and Check ‘Stack Bars’ for representing multiple types of data in a single bar. "><span class="multibar-image"></span>
+		<br>Stacked Bar
+		</div>
+	<!--	<div class="chart-type-button" charttype="multibarline" title="Bar Line Chart"><span class="multibarline-image"></span> </br>Bar Line Chart</div>	-->
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="pie" title="Pie Chart - Pie chart displays contribution of each value to a total. Use it when values can be added to 100% or when there is only one data series and values are positive.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.">
+		<span class="piechart-image"></span>
+		<br>Pie Chart
+		</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="line" title="Line Chart - Line Chart is used to display trends over time.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+ Add X and Y axis labels. Check ‘Show Values’ for values on chart and ‘Spline Chart’ for smooth line.">
+		<span class="linechart-image"></span>
+		<br>Line Chart
+		</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="area" title="Area Chart – Area chart emphasizes differences between several sets of data over a period of time.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels. Check ‘Show Values’ for values on chart. ">
+		<span class="areachart-image"></span>
+		<br> Area Chart
+		</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="bubble" title="Bubble Chart – Bubble chart plots data defined in terms of three distinct numeric parameters. Use it when values being charted are not in X axis and Y axis order or when they represent separate measurements. The third value determines the size of the bubble marker.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.
+Size Axis: Third data value for bubble size measurements.
+Chart Settings:
+Add X and Y axis labels.">
+		<span class="bubblechart-image"></span> <br>Bubble
+		</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="map" title="Map – The map plots data over geographical region of India. Geographical region can be states or districts.
+For India map with states –
+Chart Series:
+X Axis - State/UT,
+Y Axis – Value to plot on states.
+Check ‘New State’ for Telangana in ‘Map Settings’.
+For India map with districts - Check ‘District Map’ option in ‘Map Settings’.
+Chart Series:
+X Axis - District, X1 Axis - State/UT, Y Axis – Value to plot on districts.
+Map Settings provide options for color, legends, steps etc.">
+		<span class="mapchart-image"></span>
+		<br>Map
+		</div>
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="latlongmap" title="LatLong Map – The map plots data values over geographical region of India, with reference to longitude and latitude values.
+Chart Series:
+Longitude: Select Field having longitude value,
+Latitude: Select field having latitude value.
+Y axis – Data to be displayed on map.">
+		<span class="mapchart-image"></span>
+		<br>LatLong Map
+	</div>
+
+	<!--	<div onClick="selectCharttype(this);" class="chart-type-button" charttype="statemap" title="State Map – The map plots values over geographical region of a particular State/UT with respect to districts.
+Chart Series:
+X Axis – District, X1 Axis – State/UT,
+Y Axis – Values to be displayed on map.
+Map Settings provide options for color, legends, steps etc.">
+		<span class="mapchart-image"></span>
+		</br>State Map</div>
+
+		<div onClick="selectCharttype(this);" class="chart-type-button" charttype="state_district_map" title="State District Map – The map plots values over geographical region of a particular State/UT with respect to districts.
+Chart Series:
+X Axis – District, X1 Axis – State/UT,
+Y Axis – Values to be displayed on map.
+Map Settings provide options for color, legends, steps etc.">
+		<span class="mapchart-image"></span>
+	</br>State with District Map</div>
+
+<div onClick="selectCharttype(this);" class="chart-type-button" charttype="rsgis_map" title="State District Map – The map plots values over geographical region of a particular State/UT with respect to districts.
+Chart Series:
+X Axis – District, X1 Axis – State/UT,
+Y Axis – Values to be displayed on map.
+Map Settings provide options for color, legends, steps etc.">
+	<span class="mapchart-image"></span>
+</br>RSGIS Map</div>---->
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="lineviewfinder" title="Line with view finder – Line with view finder chart is similar to Line chart and used to display trends over time. It provides an extra functionality of viewing data over a specific time frame.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels. Check ‘Show Values’ for values on chart.">
+		<span class="lineviewfinder-image"></span>
+		<br>Line with View Finder</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="horizontalmultibar" title="Horizontal Multi Bar Chart – Horizontal Multi Bar chart represents data in horizontal bar. Option of ‘Stack Bars’ in ‘Chart Series’ can be used to represent multiple types of data within a single bar.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Multiple data series can be added on Y axis with respect to single data on X axis.
+Multiple series can be added in chart series.
+Chart Settings:
+Add X and Y axis labels. Check ‘Show Values’ for values on chart and Check ‘Stack Bars’ for representing multiple types of data in a single bar.">
+		<span class="horizontalmultibar-image"></span>
+		<br>Horizontal Multi Bar</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button active" charttype="multichart" title="Multi Chart – Multi chart facilitates combining of line, bar and area in a single chart, displaying data series having different measurements units on two different axis ie. Y and Y1 axis.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.
+Two chart series can be added by adding multiple data series on Y axis for single data on X axis. Choose types of the chart from ‘Chart Type’ list.
+Chart Settings:
+Add X, Y and Y1 axis labels. Y axis label and Y1 axis label represents label for different chart series. Check ‘Show Values’ for values on chart. ">
+		<span class=" multibarline-image"></span>
+		<br>Multi Chart</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="radar" title="Radar Chart – Radar chart displays value relative to a centre point. Use it when the categories are not directly comparable.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.
+Multiple chart series can be added by adding multiple data series on Y axis for single data on X axis.
+ Chart Settings:
+Add X and Y axis labels.">
+		<span class="radarchart-image"></span>
+		<br>Radar Chart</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="donut" title="Donut Chart – Donut Chart displays the contribution of each value to a total like a pie chart.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.">
+		<span class="donut-image"></span>
+		<br>Donut Chart</div>
+
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="step" title="Step Chart – A Step chart is a Line chart which uses vertical and horizontal lines to connect the data points in a series forming a step-like progression.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.
+Multiple series can be added by adding multiple data series on Y axis with respect to single data on X axis.
+Chart Settings:
+Add X and Y axis labels. Check ‘Show Values’ for values on chart.
+		">
+		<span class="stepchart-image"></span>
+		<br>Step Chart </div>
+		<div onclick="selectCharttype(this);" class="chart-type-button" charttype="drillbar" title="Drill Down Chart – Drill down charts are used to give another level of detailed reporting to charts.
+Chart Series:
+X Axis – Data to plot on X axis.
+Y Axis – Data to plot on Y axis.
+&#39;Chart Type&#39; and &#39;Drill Type&#39; are used for two levels of charts. Charts used here on levels are Bar, Pie and Horizontal Bar charts.
+Chart Settings:
+Add X and Y axis labels. Check ‘Show Values’ for values on chart.
+		">
+		<span class="drillchart-image"></span>
+	<br>DrillDown Chart</div>
+
+		<!--<div onClick="selectCharttype(this);" class="chart-type-button" charttype="boxPlot" title="boxPlot Chart">
+			<span class="boxPlot-image"></span>
+		</br>boxPlot Chart</div>
+
+		<div onClick="selectCharttype(this);" class="chart-type-button" charttype="candlestick" title="candlestick Chart">
+			<span class="candlestick-image"></span>
+		</br>candleStick Chart</div> -->
+
+	</div>
+	<div class="field-content">
+		<div class="field-field">
+			<button id="dialog-chart-setting_button" class="charttype-close ui-button ui-corner-all ui-widget" type="button" onclick="jQuery( &#39;#dialog-chart-type&#39; ).dialog( &#39;close&#39; );">Close</button>
+	</div>
+</div>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-chart-series" aria-labelledby="ui-id-7" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-7" class="ui-dialog-title">Chart Series</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-chart-series" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div id="chart-series">
+<!---Eidt for edit chart series starts here-->
+		<div id="chart-series-form-default-edit" class="section-editseries viz-chart-series-form-default">
+			<div class="toggle-chart-series">
+					<button type="button" class="btn-toggle-chart-series1 ui-button ui-corner-all ui-widget" onclick="showAddSeries()">Back to Add Series</button>
+			</div>
+			<div class="field-content">
+				<label>Series Name:</label>
+				<div class="field-field">
+					<input id="chart-series-form-key-edit" title="Provide series name here" class="viz_chart-series-form-key-edit" type="text" maxlength="50">
+					<span title="Provide series name here" class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="bgkp" class="field-content viz_bgkp" style="display: block;">
+				<label>X Axis:</label>
+				<div class="field-field">
+					<select id="chart-series-form-x-for-edit" title="select field" class="viz_chart-series-form-x-for-edit chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title="Select field to plot on X axis or Select State name field while creating India map or
+		Select District name field while creating India/State map with districts" class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="ddbm-edit" class="viz_ddbm field-content" style="display: none;">
+				<label>X1 Axis:</label>
+				<div class="field-field">
+					<select id="chart-series-form-x1-for-edit" title=" Select State name" class="viz_chart-series-form-x1-edit chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title=" Select State name field here while creating India/State map with districts." class="info-ico">i</span>
+				</div>
+			</div>
+
+			<div id="long" class="viz_long field-content" style="display: none;">
+				<label>Longitude:</label>
+				<div class="field-field">
+					<select id="chart-series-form-longitude-edit" title="Select field having Longitude." class="viz_chart-series-form-longitude-edit chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title="Select field having Longitude." class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="lat" class="viz_lat field-content" style="display: none;">
+				<label>Latitude:</label>
+				<div class="field-field">
+					<select id="chart-series-form-latitude-edit" title="Select field having Longitude." class="viz_chart-series-form-latitude-edit chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title="Select field having Latitude." class="info-ico">i</span>
+				</div>
+			</div>
+
+			<div class="field-content">
+				<label>Y Axis:</label>
+				<div class="field-field">
+					<select id="chart-series-form-y-edit" title="Select field to plot on Y axis" class="viz_chart-series-form-y-edit chart-selected-field-populate" multiple=""><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title="Select field to plot on Y axis" class="info-ico">i</span>
+				</div>
+			</div>
+			<!-- <div class="field-content viz_size_axis" id="size_axis">
+				<label>Size Axis:</label>
+				<div class="field-field">
+					<select id="chart-series-form-size" class="viz_chart-series-form-size chart-selected-field-populate"></select>
+					<span title="Select field for the measurement of bubble size." class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content viz_size_axis_2" id="size_axis2">
+				<label>Size Axis 2:</label>
+				<div class="field-field">
+					<select id="chart-series-form-size-2" class="viz_chart-series-form-size-2 chart-selected-field-populate"></select>
+					<span title="Select field for the Map Value." class="info-ico">i</span>
+				</div>
+			</div> -->
+			<div class="field-content viz_color_type" id="color_type" style="display: block;">
+				<label>Color:</label>
+				<div class="field-field">
+					<input id="chart-series-form-color-edit" title="Select color for chart" class="viz_chart-series-form-color-edit color" value="" autocomplete="off" style="background-image: none; background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+					<span title="Select color for chart" class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="series-chart-type" class="viz_series-chart-type field-content" style="display: block;">
+				<label>Chart Type:</label>
+				<div class="field-field">
+					<select id="chart-series-form-y-chart-type" class="viz_chart-series-form-y-chart-type-edit">
+						<option value="bar">Bar</option>
+						<option value="line">Line</option>
+						<option value="spline">Spline</option>
+						<option value="area">Area</option>
+						<option value="area-spline">Spline Area</option>
+					</select>
+					<span title="Choose charts from given list." class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="series-chart-side" class="viz_series-chart-side field-content" style="">
+				<label>Chart Side:</label>
+				<div class="field-field">
+					<select id="chart-series-form-y-chart-side" class="viz_chart-series-form-y-chart-side-edit">
+						<option value="1">Left</option>
+						<option value="2">Right</option>
+					</select><span title="Choose side for displaying Y and Y1 axis." class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="series-chart-base-type" class="viz_series-chart-base-type field-content" style="display: none;">
+				<label>Chart Type:</label>
+				<div class="field-field">
+					<select id="chart-series-form-basetype" class="viz_chart-series-form-basetype-edit">
+						<option value="bar">Bar</option>
+						<option value="pie">Pie</option>
+						<option value="horizontalmultibar">HorizontalBar</option>
+					</select><span title="Choose chart type for Drill-Down." class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="series-chart-drill-type" class="viz_series-chart-drill-type field-content" style="display: none;">
+				<label>Drill Type:</label>
+				<div class="field-field">
+					<select id="chart-series-form-drilltype" class="viz_chart-series-form-drilltype-edit">
+						<option value="bar">Bar</option>
+						<option value="pie">Pie</option>
+						<option value="horizontalmultibar">HorizontalBar</option>
+					</select><span title="Choose chart type for Drill-Down." class="info-ico">i</span>
+				</div>
+			</div>
+
+			<div class="field-content">
+				<label>.</label>
+				<div class="field-field">
+					<button onclick="saveEditedSeries(this);" chartserieseditid="#dialog-chart-series" id="chart-series-form-add_button" type="button" class="ui-button ui-corner-all ui-widget">Save Series</button>
+					<button id="chart-series-form-close_button" type="button" onclick="jQuery( &#39;#dialog-chart-series&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+				</div>
+			</div>
+		</div>
+
+<!--Eidt for chart series ends here-->
+
+		<div id="chart-series-form-default" class="section-addseries viz-chart-series-form-default">
+			<div class="field-content">
+				<label>Series Name:</label>
+				<div class="field-field">
+					<input id="chart-series-form-key" title="Provide series name here" class="viz_chart-series-form-key" type="text" maxlength="50">
+					<span title="Provide series name here" class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="bgkp" class="field-content viz_bgkp" style="display: block;">
+				<label>X Axis:</label>
+				<div class="field-field">
+					<select id="chart-series-form-x" title="select field" class="viz_chart-series-form-x chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title="Select field to plot on X axis or Select State name field while creating India map or
+Select District name field while creating India/State map with districts" class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="ddbm" class="viz_ddbm field-content" style="display: none;">
+				<label>X1 Axis:</label>
+				<div class="field-field">
+					<select id="chart-series-form-x1" title="select field" class="viz_chart-series-form-x1 chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title=" Select State name field here while creating India/State map with districts." class="info-ico">i</span>
+				</div>
+			</div>
+
+			<div id="long" class="viz_long field-content" style="display: none;">
+				<label>Longitude:</label>
+				<div class="field-field">
+					<select id="chart-series-form-longitude" title="Select field having Longitude." class="viz_chart-series-form-longitude chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title="Select field having Longitude." class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="lat" class="viz_lat field-content" style="display: none;">
+				<label>Latitude:</label>
+				<div class="field-field">
+					<select id="chart-series-form-latitude" title="Select field having Latitude." class="viz_chart-series-form-latitude chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title="Select field having Latitude." class="info-ico">i</span>
+				</div>
+			</div>
+
+			<div class="field-content">
+				<label>Y Axis:</label>
+				<div class="field-field">
+					<select id="chart-series-form-y" title="Select field to plot on Y axis" class="viz_chart-series-form-y chart-selected-field-populate" multiple=""><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title="Select field to plot on Y axis" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content viz_size_axis" id="size_axis" style="display: none;">
+				<label>Size Axis:</label>
+				<div class="field-field">
+					<select id="chart-series-form-size" title="Select field" class="viz_chart-series-form-size chart-selected-field-populate"><option value="">Select Fields</option><option title="Sr. No (Col.1)" value="a">Sr. No (Col.1)</option><option title="Year (Col.2)" value="b">Year (Col.2)</option><option title="Area affected in m. ha. (Col.3)" value="c">Area affected in m. ha. (Col.3)</option><option title="Population affected in million (Col.4)" value="d">Population affected in million (Col.4)</option><option title="Damage to Crops - Area in m. ha. (Col.5)" value="e">Damage to Crops - Area in m. ha. (Col.5)</option><option title="Damage to Crops - Value in Rs. Cr. (Col.6)" value="f">Damage to Crops - Value in Rs. Cr. (Col.6)</option><option title="Damage to Houses - Nos. (Col.7)" value="g">Damage to Houses - Nos. (Col.7)</option><option title="Damage to Houses - Value in Rs. Cr. (Col.8)" value="h">Damage to Houses - Value in Rs. Cr. (Col.8)</option><option title="Cattle Lost Nos. (Col.9)" value="i">Cattle Lost Nos. (Col.9)</option><option title="Human live Lost Nos. (Col.10)" value="j">Human live Lost Nos. (Col.10)</option><option title="Damage to Public Utilities in Rs. Cr. (Col.11)" value="k">Damage to Public Utilities in Rs. Cr. (Col.11)</option><option title="Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)" value="l">Total damages Crops, Houses &amp; Public utilities in Rs. Cr. (Col.12) = (Col.6+Col.8+Col.11)</option></select>
+					<span title="Select field for the measurement of bubble size." class="info-ico">i</span>
+				</div>
+			</div>
+			<!-- <div class="field-content viz_size_axis_2" id="size_axis2">
+				<label>Size Axis 2:</label>
+				<div class="field-field">
+					<select id="chart-series-form-size-2" class="viz_chart-series-form-size-2 chart-selected-field-populate"></select>
+					<span title="Select field for the Map Value." class="info-ico">i</span>
+				</div>
+			</div> -->
+			<div class="field-content viz_color_type" id="color_type" style="display: block;">
+				<label>Color:</label>
+				<div class="field-field">
+					<input id="chart-series-form-color" title="Select color for chart" class="viz_chart-series-form-color color" value="" autocomplete="off" style="background-image: none; background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+					<span title="Select color for chart" class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="series-chart-type" class="viz_series-chart-type field-content" style="display: block;">
+				<label>Chart Type:</label>
+				<div class="field-field">
+					<select id="chart-series-form-y-chart-type" class="viz_chart-series-form-y-chart-type">
+					  <option value="bar">Bar</option>
+					  <option value="line">Line</option>
+					  <option value="spline">Spline</option>
+					  <option value="area">Area</option>
+					  <option value="area-spline">Spline Area</option>
+					</select>
+					<span title="Choose charts from given list." class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="series-chart-side" class="viz_series-chart-side field-content" style="">
+				<label>Chart Side:</label>
+				<div class="field-field">
+					<select id="chart-series-form-y-chart-side" class="viz_chart-series-form-y-chart-side">
+					  <option value="1">Left</option>
+					  <option value="2">Right</option>
+					</select><span title="Choose side for displaying Y and Y1 axis." class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="series-chart-base-type" class="viz_series-chart-base-type field-content" style="display: none;">
+				<label>Chart Type:</label>
+				<div class="field-field">
+					<select id="chart-series-form-basetype" class="viz_chart-series-form-basetype" style="display: none;">
+						<option value="bar">Bar</option>
+						<option value="pie">Pie</option>
+						<option value="horizontalmultibar">HorizontalBar</option>
+					</select><span title="Choose chart type for Drill-Down." class="info-ico">i</span>
+				</div>
+			</div>
+			<div id="series-chart-drill-type" class="viz_series-chart-drill-type field-content" style="display: none;">
+				<label>Drill Type:</label>
+				<div class="field-field">
+					<select id="chart-series-form-drilltype" class="viz_chart-series-form-drilltype">
+						<option value="bar">Bar</option>
+						<option value="pie">Pie</option>
+						<option value="horizontalmultibar">HorizontalBar</option>
+					</select><span title="Choose chart type for Drill-Down." class="info-ico">i</span>
+				</div>
+			</div>
+
+			<div class="field-content">
+				<label>.</label>
+				<div class="field-field">
+					<button onclick="addChartseries(this);" chartseriesid="#dialog-chart-series" id="chart-series-form-add_button" type="button" class="ui-button ui-corner-all ui-widget">Add Series</button>
+					<button id="chart-series-form-close_button" type="button" onclick="jQuery( &#39;#dialog-chart-series&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+				</div>
+			</div>
+		</div>
+		<ul class="viz_chart-series-list ui-sortable" id="chart-series-list"><li class="ui-state-default"><div class="left" style="width: 15px"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div><div class="left" style="width: 90%"><div class="pad-2"><span class="badge badge-important">Series: "Damage to Crops - Area"</span></div><div class="pad-2 forseries-x"><span class="badge badge-inverse">X: "Year (Col.2)"</span> </div><div class="pad-2 forseries-y"><span class="badge badge-inverse">Y: "Damage to Crops - Area in m. ha. (Col.5)"</span> </div><div class="pad-2"><span class="badge badge-inverse hide-col">Color: "#FF7452"</span> </div></div><div class="right" style="width: 10px" title="Remove Series"><button id="chart-series-0" onclick="deleteSeries(0)" class="close">×</button></div><div class="edit-chart-series" title="Edit Series" onclick="editSeries(0)"><button>Edit</button></div><div class="clear"></div></li><li class="ui-state-default"><div class="left" style="width: 15px"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></div><div class="left" style="width: 90%"><div class="pad-2"><span class="badge badge-important">Series: "Damage to Crops - Value"</span></div><div class="pad-2 forseries-x"><span class="badge badge-inverse">X: "Year (Col.2)"</span> </div><div class="pad-2 forseries-y"><span class="badge badge-inverse">Y: "Damage to Crops - Value in Rs. Cr. (Col.6)"</span> </div><div class="pad-2"><span class="badge badge-inverse hide-col">Color: "#C982FF"</span> </div></div><div class="right" style="width: 10px" title="Remove Series"><button id="chart-series-1" onclick="deleteSeries(1)" class="close">×</button></div><div class="edit-chart-series" title="Edit Series" onclick="editSeries(1)"><button>Edit</button></div><div class="clear"></div></li></ul>
+		<div class="clear"></div>
+	</div>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-chart-setting" aria-labelledby="ui-id-8" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-8" class="ui-dialog-title">Chart Settings</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-chart-setting" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div id="chartsetting">
+		<div id="chart-type-setting">
+			<div class="field-content">
+				<label>X Axis Label:</label>
+				<div class="field-field">
+					<input type="text" id="chart-x_axis_label" class="viz_chart-x_axis_label" title="Type X axis label here" maxlength="128" onkeyup="updateXAxisLabel(this);">
+					<span title="Type X axis label here" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content">
+				<label>Y Axis Label:</label>
+				<div class="field-field">
+					<input type="text" id="chart-y_axis_label" class="viz_chart-y_axis_label" title="Type Y axis label here" maxlength="128" onkeyup="updateYAxisLabel(this);">
+					<span title="Type Y axis label here" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content">
+				<label>Y1 Axis Label:</label>
+				<div class="field-field">
+					<input type="text" id="chart-y1_axis_label" title="Type Y1 axis" class="viz_chart-y1_axis_label" maxlength="128" onkeyup="updateY1AxisLabel(this);">
+					<span title="Type Y1 axis label here for other chart when chart type is ‘Multi Chart’" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content y-max-values">
+				<label>Y Axis Max Val:</label>
+				<div class="field-field">
+					<input title="Set Y axis max value here" type="text" id="y_axis_max_val" class="viz_y_axis_max_val" onkeyup="updateYAxisMaxVal(this);">
+					<span title="Set Y axis max value here" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content y-max-values">
+				<label>Y1 Axis Max Val:</label>
+				<div class="field-field">
+					<input type="text" id="y1_axis_max_val" title="Set Y1 axis max value here" class="viz_y1_axis_max_val" onkeyup="updateY1AxisMaxVal(this);">
+					<span title="Set Y1 axis max value here" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content axis-tick">
+				<label>Rotate X-axis Tick:</label>
+				<div class="field-field ">
+					<input type="text" id="x-axis-tick" title="Rotate" class="viz_x-axis-tick" onkeyup="xAxisTick(this);">
+				</div>
+			</div>
+			<div class="field-content">
+				<label>Advanced:</label>
+				<div class="field-field advanced_value">
+					<textarea id="chart-advanced" title="Use range" class="viz_chart-advanced" onkeyup="showAdvancevalue(this);" maxlength="500"> </textarea>
+					<span title="Use range in case of radar chart. For example, range={&quot;max&quot;:100};" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content">
+				<label>X Tick Cull:</label>
+				<div class="field-field">
+					<select id="x-tick-cull" class="viz_x-tick-cull" charttickcullvalue="#dialog-chart-setting" onchange="cullXtick(this)">
+						<option value="auto">Auto</option>
+						<option value="all">Show All</option>
+					</select>
+					<span title="Select the number of ticks you want show on X-axis" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content top-list">
+				<label>Top/Bottom List:</label>
+				<div class="field-field ">
+					<input type="text" id="chart-top-list" title="Top List" class="viz_top-list" onkeyup="topListFromSeries(this);">
+				</div>
+			</div>
+			<div class="field-content hide_sort" style="display: none;">
+				<label class="sorting-lable">Sort Bars:</label>
+				<div class="field-field sorting-type">
+					<input type="radio" id="chart_sort_bars_r1" title="Sort Bars" class="viz_chart_sort_bars desc" name="sort" value="Decending" onclick="sortBar(this);"> Decending
+					<input type="radio" id="chart_sort_bars_r2" title="Sort Bars" class="viz_chart_sort_bars asc" name="sort" value="Accending" onclick="sortBar(this);"> Accending
+					<input type="radio" id="chart_sort_bars_r3" title="Sort Bars" class="viz_chart_sort_bars none" name="sort" value="None" onclick="sortBar(this);"> None
+				</div>
+			</div>
+			<div class="field-content">
+				<label>Show Values:</label>
+				<div class="field-field">
+					<input type="checkbox" id="chart-show_value" onclick="chartShowvalue(this)" title="Shows data" chartshowvalue="#dialog-chart-setting" class="viz_chart-show_value" value="1/">
+					<span title="Shows data value on charts, plotted on Y axis." class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content">
+				<label>Hide X Tick:</label>
+				<div class="field-field">
+					<input type="checkbox" id="chart-x-tick" class="viz_chart-x-tick" title="Hide X Tick Values" charttickvalue="#dialog-chart-setting" onclick="hideXTick(this);" value="1">
+						<span title="Hide X Tick Values" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content hide_stack_bar" style="display: none;">
+				<label>Stack Bars:</label>
+				<div class="field-field">
+					<input type="checkbox" title="Stacks multiple series to a single bar." id="chart-stack_bars" class="viz_chart-stack_bars" onclick="chartStackBar(this)" value="1/">
+					<span title="Stacks multiple series to a single bar." class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content spline_hide" style="display: none;">
+				<label>Spline Chart:</label>
+				<div class="field-field">
+					<input type="checkbox" id="chart-spline_line" onclick="chartSpline(this);" title="Converts Line" class="viz_chart-spline_line" value="1/">
+					<span title="Converts Line to the Special line in Line Chart." class="info-ico">i</span>
+				</div>
+			</div>
+
+			<div class="field-content">
+					<label>.</label>
+					<div class="field-field">
+					<button id="dialog-chart-advanced-settings_button" class="viz_dialog-chart-advanced-settings_button ui-button ui-corner-all ui-widget" type="button">Apply Settings</button>
+					<button id="dialog-chart-setting_button" type="button" onclick="jQuery( &#39;#dialog-chart-setting&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-view-note" aria-labelledby="ui-id-9" style="height: auto; width: 600px; top: 238px; left: 110.5px; display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-9" class="ui-dialog-title">Note</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-view-note" class="dialog-content ui-dialog-content ui-widget-content" style="display: block; width: auto; min-height: 0px; max-height: none; height: 209.688px;">
+	<form id="dialog-view-note-form">
+		<p id="dialog-view-note-content">Due to frequent floods every year in the country, there is a huge loss of human lives and animals, damage to houses and crops. Area of crops damaged due to floods was 3.374 m. ha. during 2015. It has increased by 97.3% to 6.658 in 2016 above 2015. During 2017, it has decreased by -23.3% to 5.104 m. ha. in comparison to 2016.
+
+Value of crops damaged was Rs. 6928.8 crores due to floods during 2017, up by 71% against Rs. 4052.723 crore during 2016. We have observed annual decline of -76.2% in value of crops damage due to floods during 2016 above 2015 from Rs. 17043.948 crores.
+
+Note- Source- RAJYA SABHA SESSION - 246 UNSTARRED QUESTION No 2225. Tentative Figures Compiled from inputs from States.</p>
+	<input type="hidden" name="as_fid" value="5ddf31094afb54315f2925b750c2230301627689"></form>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-info-details" aria-labelledby="ui-id-10" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-10" class="ui-dialog-title">Dataset Info</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-info-details" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div id="opendataviz-node-details">
+</div>	<button id="dialog-info-close_button" type="button" onclick="jQuery( &#39;#dialog-info-details&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-mydata-login" aria-labelledby="ui-id-11" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-11" class="ui-dialog-title">Visualization Login</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-mydata-login" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<p></p><h4>To save and share your visualization please login with your credentials</h4><p></p>
+	<button id="mydata-login_button" type="button" onclick="window.location = &#39;https://visualizeapi.data.gov.in/auth/login?destination=/?page=my-data&#39;;" class="ui-button ui-corner-all ui-widget">Log in</button>
+	<button id="mydata-login-close_button" type="button" onclick="jQuery( &#39;#dialog-mydata-login&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Cancel</button>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-mydata--force-login" aria-labelledby="ui-id-12" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-12" class="ui-dialog-title">Visualization Login</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-mydata--force-login" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<p></p><h4>To save external Url you must login with your credentials</h4><p></p>
+	<button id="mydata-login_button" type="button" onclick="window.location = &#39;http://ogdp-visualizeapi/auth/login?destination=/?page=my-data&#39;;" class="ui-button ui-corner-all ui-widget">Log in</button>
+	<button id="mydata-login-close_button" type="button" onclick="jQuery( &#39;#dialog-mydata--force-login&#39; ).dialog( &#39;close&#39; ); jQuery(&#39;select&#39;).each(function() { this.selectedIndex = 0 });" class="ui-button ui-corner-all ui-widget">Cancel</button>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-mydata-save" aria-labelledby="ui-id-13" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-13" class="ui-dialog-title">Mydata Save</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-mydata-save" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<p></p><h4>Save your Data before visualize it.</h4><p></p>
+	<button id="mydata-save_button" type="button" onclick="saveinstantView()" class="ui-button ui-corner-all ui-widget">Save</button>
+	<button id="mydata-save-close_button" type="button" onclick="jQuery( &#39;#dialog-mydata-save&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Cancel</button>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-error" aria-labelledby="ui-id-14" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-14" class="ui-dialog-title">Error message</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-error" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<p></p><h4>Instance creation has been temporarily halted</h4><p></p>
+	<button id="dialog-error-close_button" type="button" onclick="jQuery( &#39;#dialog-error&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Cancel</button>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-mydata-loginforsave" aria-labelledby="ui-id-15" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-15" class="ui-dialog-title">Visualization Login</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-mydata-loginforsave" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<p></p><h4>To save and share your visualization please login with your credentials</h4><p></p>
+	<button id="mydata-login_button" type="button" onclick="saveinstantView_wl(0)" class="ui-button ui-corner-all ui-widget">Log in</button>
+	<button id="mydata-login-close_button" type="button" onclick="jQuery(&#39;#dialog-mydata-loginforsave&#39;).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Cancel</button>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-chart-other-setting" aria-labelledby="ui-id-16" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-16" class="ui-dialog-title">Chart Other Settings</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-chart-other-setting" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div class="field-content">
+	<label>Comments:</label>
+		<div class="field-field">
+			<input type="text" id="chart-comment" class="viz_chart-comment" title="Chart Other Settings" updatecommentvalue="#dialog-chart-other-setting" onkeyup="updateChartComment(this);" maxlength="99">
+		</div>
+	</div>
+	<div class="field-content">
+	<label>Show update time:</label>
+		<div class="field-field">
+			<input type="checkbox" id="select-last-update-time" title="Chart Settings" class="viz_select-last-update-time" updatetimevalue="#dialog-chart-other-setting" onclick="updateLastUpdateTime(this);" value="">
+		</div>
+	</div>
+
+	<div class="field-content">
+			<label>.</label>
+			<div class="field-field">
+			<button id="dialog-chart-advanced-settings_button" class="viz_dialog-chart-advanced-settings_button ui-button ui-corner-all ui-widget" type="button">Apply Settings</button>
+			<button id="dialog-chart-setting_button" type="button" onclick="jQuery(&#39;#dialog-chart-other-setting&#39;).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+		</div>
+	</div>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-view-list" aria-labelledby="ui-id-17" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-17" class="ui-dialog-title">Charts</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-view-list" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<!-- <h2 id="opendataviz-instance-title" ><img src="images/instance.png" /><span>Instance</span></h2>  -->
+<div id="accordion2"><div id="inst-content-complete-view"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925&amp;embed=1#" class="complete-view" onclick="return completeView();">Complete View of Data</a></div><div id="inst-content-759bfdf2-73de-4866-9195-2f2883bb0e23" class="inst-content"><ul class="data_viz_viewer_content"><li class="table"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=97965" title="data set" datavizview="97965">data set</a></li><li class="table"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=97964" title="data set" datavizview="97964">data set</a></li><li class="table"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=97963" title="data set" datavizview="97963">data set</a></li><li class="multibar"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=97920" title="STACKED BAR" datavizview="97920">STACKED BAR</a></li><li class="bar"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=97919" title="STACKED BAR" datavizview="97919">STACKED BAR</a></li><li class="multichart"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=97475" title="Year-wise the damages suffered due to floods from 2015 to 2017" datavizview="97475">Year-wise the damages suffered due to floods from 2015 to 2017</a></li><li class="multichart"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=97316" title="mine 2" datavizview="97316">mine 2</a></li><li class="table"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=96639" title=" manideepak" datavizview="96639"> manideepak</a></li><li class="multibar"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=96886" title="human life and public utilities " datavizview="96886">human life and public utilities </a></li><li class="multichart"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=96698" title="loss of money comparison due to damage of houses and public utilities" datavizview="96698">loss of money comparison due to damage of houses and public utilities</a></li><li class="line"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=96685" title="loss of money in the terms of crops and utilities" datavizview="96685">loss of money in the terms of crops and utilities</a></li><li class="pie"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=96674" title="percentage loss  of human life in three years" datavizview="96674">percentage loss  of human life in three years</a></li><li class="step"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=96665" title="LOSS OF CATTLE" datavizview="96665">LOSS OF CATTLE</a></li><li class="area"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=96660" title="damage to houses" datavizview="96660">damage to houses</a></li><li class="line"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=96655" title="population effected in million " datavizview="96655">population effected in million </a></li><li class="bar"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=96651" title="Area field affected in m.ha" datavizview="96651">Area field affected in m.ha</a></li><li class="pie"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=94463" title="House damaged by floods during 2015 to 2017" datavizview="94463">House damaged by floods during 2015 to 2017</a></li><li class="multichart"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=95570" title="Crops Damage due to Floods in India during 2015 to 2017" datavizview="95570">Crops Damage due to Floods in India during 2015 to 2017</a></li><li class="multichart"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=95569" title="Crops Damage due to Floods in India during 2015 to 2017" datavizview="95569">Crops Damage due to Floods in India during 2015 to 2017</a></li><li class="multichart"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=92488" title="Houses Damaged due to Floods in India during 2015 to 2017" datavizview="92488">Houses Damaged due to Floods in India during 2015 to 2017</a></li><li class="bubble"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=92401" title="Crops Damage due to Floods in India during 2015 to 2017 " datavizview="92401">Crops Damage due to Floods in India during 2015 to 2017 </a></li><li class="multichart"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91925" title="Crops Damage due to Floods in India during 2015 to 2017" datavizview="91925">Crops Damage due to Floods in India during 2015 to 2017</a></li><li class="multichart"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=91463" title="DAMAGES SUFFERED DUE TO FLOOD" datavizview="91463">DAMAGES SUFFERED DUE TO FLOOD</a></li><li class="pie"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=89087" title="Damages suffered due to Floods" datavizview="89087">Damages suffered due to Floods</a></li><li class="pie"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=89503" title="damage suffered due to floods" datavizview="89503">damage suffered due to floods</a></li><li class="pie"><a href="https://visualize.data.gov.in/?inst=759bfdf2-73de-4866-9195-2f2883bb0e23&amp;vid=88745" title="Damage By Floods" datavizview="88745">Damage By Floods</a></li></ul></div></div>
+<div id="opendataviz-new-inst-content">
+</div>	<button id="dialog-view-close_button" type="button" onclick="jQuery( &#39;#dialog-view-list&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-map-setting" aria-labelledby="ui-id-18" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-18" class="ui-dialog-title">Map Settings</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-map-setting" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div id="mapsetting">
+		<div id="map-setting">
+			<div class="field-content">
+				<label>Steps:</label>
+				<div class="field-field">
+					<select id="map-setting-form-steps" onclick="mapSettingsfromsteps(this);" class="viz_map-setting-form-steps chart-selected-field"><option>3</option><option>4</option><option>5</option></select>
+					<span title="Represents number of data intervals." class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content">
+				<label>Scale:</label>
+				<div id="field-map-setting-form-color-wrapper" class="viz_field-map-setting-form-color-wrapper field-field"><input class="division" title="division" value="undefined" type="text"><input class="color scalecolor" title="scalecolor" value=" #EEDFFF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(238, 223, 255); color: rgb(0, 0, 0);"><br><input class="division" title="division" value="undefined" type="text"><input class="color scalecolor" title="scalecolor" value=" #CD9FFF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(205, 159, 255); color: rgb(0, 0, 0);"><br><input class="color scalecolor" title="scalecolor" value=" #7B00FF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(123, 0, 255); color: rgb(255, 255, 255);"><br></div>
+					<span class="field-field"><span title="Represents color for data intervals." class="info-ico">i</span></span>
+			</div>
+			<div class="field-content">
+				<label>Legend Title:</label>
+				<div class="field-field">
+					<input id="map-setting-form-legend-title" title="Type legend title." class="viz_map-setting-form-legend-title" value="" type="text" maxlength="35">
+						<span title="Type legend title." class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content" style="z-index: 9999991!important">
+				<label>Map Fill Color:</label>
+				<div class="field-field">
+					<input id="map-setting-form-fill-color" title="Color" class="viz_map-setting-form-fill-color color" value="A1A1A1" autocomplete="off" style="background-image: none; background-color: rgb(80, 80, 80); color: rgb(255, 255, 255);">
+						<span title="Color of the map when no data value is associated." class="info-ico">i</span>
+				</div>
+			</div>
+			<!--<div class="field-content" style = "z-index: 9999991!important">
+				<label>Map Stroke Color:</label>
+				<div class="field-field">
+					<input id="map-setting-form-stroke-color" class="viz_map-setting-form-stroke-color color" value="505050" />
+						<span title="Choose boundary color here." class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content">
+				<label>Stroke Width:</label>
+				<div class="field-field">
+				<select id="map-setting-form-stroke-width" class="viz_map-setting-form-stroke-width chart-selected-field"><option>0</option><option>1</option><option>2</option></select>
+					<span title="Select boundary stroke width." class="info-ico">i</span>
+				</div>
+			</div>-->
+			<div class="field-content">
+				<label>Show Label on Map:</label>
+				<div class="field-field">
+					<select id="map-show_label" class="viz_map-show_label chart-selected-field"><option value="0">No</option><option value="1">Yes</option></select>
+					<span title="This shows name of state/district on map" class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content">
+				<label>Select State:</label>
+				<div class="field-field">
+					<select id="state_name_from_list" class="viz_state_name_from_list">
+						<option value="">Select State</option>
+					  <option value="35">ANDAMAN NICOBAR</option>
+						<option value="37">ANDHRAPRADESH</option>
+						<option value="12">ARUNACHAL PRADESH</option>
+						<option value="18">ASSAM</option>
+						<option value="10">BIHAR</option>
+						<option value="04">CHANDIGARH</option>
+						<option value="22">CHHATTISGARH</option>
+						<option value="26">DADRA NAGAR</option>
+						<option value="25">DAMAN DIU</option>
+						<option value="07">DELHI</option>
+						<option value="30">GOA</option>
+						<option value="24">GUJARAT</option>
+						<option value="06">HARYANA</option>
+						<option value="02">HIMACHAL PRADESH</option>
+						<option value="01">JAMMU &amp; KASHMIR</option>
+						<option value="20">JHARKHAND</option>
+						<option value="29">KARNATAKA</option>
+						<option value="32">KERALA</option>
+						<option value="31">LAKSHADWEEP</option>
+						<option value="23">MADHYA PRADESH</option>
+						<option value="27">MAHARASHTRA</option>
+						<option value="14">MANIPUR</option>
+						<option value="17">MEGHALAYA</option>
+						<option value="15">MIZORAM</option>
+						<option value="13">NAGALAND</option>
+						<option value="21">ODISHA</option>
+						<option value="34">PUDUCHERRY</option>
+						<option value="03">PUNJAB</option>
+						<option value="08">RAJASTHAN</option>
+						<option value="11">SIKKIM</option>
+						<option value="33">TAMILNADU</option>
+						<option value="36">TELANGANA</option>
+						<option value="16">TRIPURA</option>
+						<option value="09">UTTAR PRADESH</option>
+						<option value="05">UTTARAKHAND</option>
+						<option value="19">WEST BENGAL</option>
+					</select>
+						<span title="Select state name on which data to be plotted in state map." class="info-ico">i</span>
+				</div>
+			</div>
+
+			<!--<div class="field-content">
+				<label>District Map:</label>
+				<div class="field-field">
+					<input type="checkbox" id="chart-district_map" class="viz_chart-district_map" onClick="createNewState(this);" value=1/>
+						<span title="Check option for creating district map." class="info-ico">i</span>
+				</div>
+			</div>-->
+
+
+		 <div class="field-content">
+	  	<label>.</label>
+	  	<div class="field-field">
+	  		<button id="field-form-apply-chart-settings_button" class="viz_apply_map_settings ui-button ui-corner-all ui-widget" mapsettingvalue="#dialog-map-setting" onclick="applyMapsettings(this);" type="button">Apply Settings</button>
+	  		<button id="field-form-close_button" type="button" onclick="jQuery( &#39;#dialog-map-setting&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+	  	</div>
+	  </div>
+		</div>
+	</div>
+</div></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable" aria-describedby="dialog-district-map-setting" aria-labelledby="ui-id-19" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-19" class="ui-dialog-title">District Settings</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="."><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>.</button></div><div id="dialog-district-map-setting" class="dialog-content ui-dialog-content ui-widget-content" style="display: block;">
+	<div id="mapsetting">
+		<div id="map-setting">
+			<div class="field-content">
+				<label>Steps(Districts)</label>
+				<div class="field-field">
+					<select id="map-setting-form-steps-district" onclick="distmapSettingsfromsteps(this);" class="viz_district_map-setting-form-steps chart-selected-field"><option>3</option><option>4</option><option>5</option></select>
+					<span title="Represents number of data intervals." class="info-ico">i</span>
+				</div>
+			</div>
+			<div class="field-content district-field-content">
+				<label>Scale(Districts)</label>
+				<div id="field-district-map-setting-form-color-wrapper" class="viz_field-district-map-setting-form-color-wrapper field-field"><input class="division" title="division" value="undefined" type="text"><input class="color scalecolor" title="scalecolor" value=" #EEDFFF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(238, 223, 255); color: rgb(0, 0, 0);"><br><input class="division" title="division" value="undefined" type="text"><input class="color scalecolor" title="scalecolor" value=" #CD9FFF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(205, 159, 255); color: rgb(0, 0, 0);"><br><input class="color scalecolor" title="scalecolor" value=" #7B00FF" maxlength="6" autocomplete="off" style="background-image: none; background-color: rgb(123, 0, 255); color: rgb(255, 255, 255);"><br></div>
+					<span class="field-field"><span title="Represents color for data intervals." class="info-ico">i</span></span>
+			</div>
+			<div class="field-content" style="z-index: 9999991!important">
+				<label>Map Fill Color:</label>
+				<div class="field-field">
+					<input id="district-map-setting-form-fill-color" title="Color of the map" class="viz_district_map-setting-form-fill-color color" value="A1A1A1" autocomplete="off" style="background-image: none; background-color: rgb(80, 80, 80); color: rgb(255, 255, 255);">
+						<span title="Color of the map when no data value is associated." class="info-ico">i</span>
+				</div>
+			</div>
+			<!-- <div class="field-content">
+				<label>Link District:</label>
+				<div class="field-field">
+					<input id="district_link" class="viz_district_link" value="" type="text" maxlength="150"/>
+						<span title="District Link Url" class="info-ico">i</span>
+				</div>
+			</div> -->
+
+			<div class="field-content">
+			 <label>.</label>
+			 <div class="field-field">
+				 <button id="field-form-apply-chart-settings_button" class="viz_apply_map_settings ui-button ui-corner-all ui-widget" mapsettingvalue="#dialog-district-map-setting" onclick="applyDistMapsettings(this);" type="button">Apply Settings</button>
+				 <button id="field-form-close_button" type="button" onclick="jQuery( &#39;#dialog-district-map-setting&#39; ).dialog( &#39;close&#39; );" class="ui-button ui-corner-all ui-widget">Close</button>
+			 </div>
+		 </div>
+		</div>
+	</div>
+</div></div></body></html>
